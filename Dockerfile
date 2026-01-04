@@ -31,7 +31,7 @@ WORKDIR /app
 # Copy template, styles, config, and assets
 COPY nenga.emz Makefile vivliostyle.config.js ./
 COPY style*.css ./
-COPY hagaki-bg.svg grid-only.svg ./
+COPY hagaki-bg.svg grid-only.svg sample.csv ./
 COPY entrypoint.sh ./
 RUN chmod +x /app/entrypoint.sh
 

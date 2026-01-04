@@ -10,6 +10,9 @@ case "$1" in
     clean)
         exec make -f /app/Makefile clean
         ;;
+    demo)
+        exec make -f /app/Makefile demo
+        ;;
     "")
         exec make -f /app/Makefile
         ;;

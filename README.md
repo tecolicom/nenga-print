@@ -45,11 +45,22 @@ echo '-I tecolicom/nenga-print' > .dozorc
 ```bash
 dozo make          # PDF を生成
 dozo make clean    # PDF を削除
+dozo make demo     # デモ用 PDF を生成
 ```
 
 生成されるファイル：
-- `Nenga-2026.pdf` - 印刷用（枠なし）
-- `Nenga-2026-preview.pdf` - プレビュー用（枠付き）
+- `*.pdf` - 印刷用（枠なし）
+- `*-preview.pdf` - プレビュー用（枠付き）
+
+### デモ
+
+`make demo` でサンプルデータから PDF を生成できます：
+
+```bash
+dozo -I tecolicom/nenga-print make demo
+```
+
+`sample.csv`、`sample.pdf`、`sample-preview.pdf` が生成されます。
 
 ### Docker を直接使用
 

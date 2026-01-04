@@ -27,4 +27,18 @@ all: $(PDFS) $(PREVIEWS)
 clean:
 	rm -f $(WORKDIR)/*.pdf
 
-.PHONY: all clean
+# デモ用 PDF を生成
+demo: $(WORKDIR)/sample.csv $(WORKDIR)/sample.pdf $(WORKDIR)/sample-preview.pdf
+
+$(WORKDIR)/sample.csv: $(APPDIR)/sample.csv
+	cp $< $@
+
+$(WORKDIR)/sample.pdf: $(APPDIR)/sample.csv
+	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
+	cd $(APPDIR) && vivliostyle build --style style-printer.css -o $@
+
+$(WORKDIR)/sample-preview.pdf: $(APPDIR)/sample.csv
+	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
+	cd $(APPDIR) && vivliostyle build --style style-preview.css -o $@
+
+.PHONY: all clean demo

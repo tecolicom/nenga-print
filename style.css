@@ -3,18 +3,6 @@
 /* Klee One フォント（Google Fonts） */
 @import url('https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap');
 
-/* Klee One フォント（ローカル、フォールバック） */
-@font-face {
-  font-family: 'Klee One';
-  font-weight: 400;
-  src: local('Klee One'), url('fonts/KleeOne-Regular.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Klee One';
-  font-weight: 600;
-  src: local('Klee One SemiBold'), url('fonts/KleeOne-SemiBold.ttf') format('truetype');
-}
-
 /* ページ設定 */
 @page {
   size: 100mm 148mm;
