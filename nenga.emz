@@ -36,6 +36,12 @@ preamble: |
     {%- elif '郵便番号' in row %}{{ 値(row['郵便番号']) }}
     {%- endif -%}
   {%- endmacro -%}
+  {#- 家族の正規化（子供 or 家族） -#}
+  {%- macro 家族(row) -%}
+    {%- if   '子供' in row %}{{ 値(row['子供']) }}
+    {%- elif '家族' in row %}{{ 値(row['家族']) }}
+    {%- endif -%}
+  {%- endmacro -%}
 ---
 <!DOCTYPE html>
 <html lang="ja">
@@ -59,16 +65,16 @@ preamble: |
   </div>
   {%- set 姓 = 値(宛先['姓']) %}
   {%- set 名 = 値(宛先['名']) %}
-  {%- set 配偶者 = 値(宛先['配偶者']) %}
-  {%- set 子供 = 値(宛先['子供']) %}
+  {%- set 配偶者名 = 値(宛先['配偶者']) %}
+  {%- set 家族名 = 家族(宛先) %}
   <div class="to-names">
     <table class="name-table">
       <tr><td class="sei">{{ 姓 }}</td><td class="mei">{{ 名 }}</td><td class="title">様</td></tr>
-      {%- if 配偶者 %}
-      <tr><td class="sei"></td><td class="mei">{{ 配偶者 }}</td><td class="title">様</td></tr>
+      {%- if 配偶者名 %}
+      <tr><td class="sei"></td><td class="mei">{{ 配偶者名 }}</td><td class="title">様</td></tr>
       {%- endif %}
-      {%- if 子供 %}
-      {%- for 子 in 子供.split('・') %}
+      {%- if 家族名 %}
+      {%- for 子 in 家族名.split('・') %}
       <tr><td class="sei"></td><td class="mei">{{ 子 }}</td><td class="title">様</td></tr>
       {%- endfor %}
       {%- endif %}
@@ -82,15 +88,15 @@ preamble: |
   </div>
   {%- set 姓 = 値(差出人['姓']) %}
   {%- set 名 = 値(差出人['名']) %}
-  {%- set 配偶者 = 値(差出人['配偶者']) %}
-  {%- set 子供 = 値(差出人['子供']) %}
+  {%- set 配偶者名 = 値(差出人['配偶者']) %}
+  {%- set 家族名 = 家族(差出人) %}
   <div class="from-names">
     <span class="name-main">{{ 姓 }} {{ 名 }}</span>
-    {%- if 配偶者 %}
-    <span class="name-sub">{{ 配偶者 }}</span>
+    {%- if 配偶者名 %}
+    <span class="name-sub">{{ 配偶者名 }}</span>
     {%- endif %}
-    {%- if 子供 %}
-    {%- for 子 in 子供.split('・') %}
+    {%- if 家族名 %}
+    {%- for 子 in 家族名.split('・') %}
     <span class="name-sub">{{ 子 }}</span>
     {%- endfor %}
     {%- endif %}
