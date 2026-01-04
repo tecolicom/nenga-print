@@ -65,7 +65,14 @@ dozo -I tecolicom/nenga-print make demo
 ### Docker を直接使用
 
 ```bash
+# PDF を生成
 docker run --rm -v "$PWD:/work" -w /work tecolicom/nenga-print
+
+# デモ
+docker run --rm -v "$PWD:/work" -w /work tecolicom/nenga-print demo
+
+# クリーン
+docker run --rm -v "$PWD:/work" -w /work tecolicom/nenga-print clean
 ```
 
 ## ビルド
