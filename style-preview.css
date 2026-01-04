@@ -1,0 +1,18 @@
+/* プレビュー用オーバーライド：印刷時も背景を表示 */
+@media print {
+  .card {
+    background-image: none !important;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100mm;
+    height: 148mm;
+    background-image: url('grid-only.svg'), url('hagaki-bg.svg');
+    background-size: 100mm 148mm, 100mm 148mm;
+    background-repeat: no-repeat, no-repeat;
+    z-index: -1;
+  }
+}

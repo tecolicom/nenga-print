@@ -1,0 +1,210 @@
+/* 年賀状宛名印刷 CSS（横書き版） */
+
+/* Klee One フォント（Google Fonts） */
+@import url('https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap');
+
+/* Klee One フォント（ローカル、フォールバック） */
+@font-face {
+  font-family: 'Klee One';
+  font-weight: 400;
+  src: local('Klee One'), url('fonts/KleeOne-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Klee One';
+  font-weight: 600;
+  src: local('Klee One SemiBold'), url('fonts/KleeOne-SemiBold.ttf') format('truetype');
+}
+
+/* ページ設定 */
+@page {
+  size: 100mm 148mm;
+  margin: 0;
+}
+
+
+/* 基本設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Klee One', serif;
+}
+
+/* カード（ハガキ） */
+.card {
+  width: 100mm;
+  height: 148mm;
+  position: relative;
+  page-break-after: always;
+  overflow: hidden;
+  background-image: url('hagaki-bg.png');
+  background-size: 100mm 148mm;
+  background-repeat: no-repeat;
+}
+
+.card:last-child {
+  page-break-after: auto;
+}
+
+/* ==================== */
+/* 宛先郵便番号         */
+/* ==================== */
+/* SVG枠: 各枠 width=5.7mm, height=8mm, top=12mm */
+.to-zip {
+  position: absolute;
+  top: 12mm;
+  height: 8mm;
+  line-height: 8mm;
+}
+
+.to-zip .zip-digit {
+  position: absolute;
+  font-size: 16pt;
+  width: 5.7mm;
+  text-align: center;
+}
+
+/* 郵便番号3桁 */
+.to-zip .zip-1 { left: 44.4mm; }
+.to-zip .zip-2 { left: 51.7mm; }
+.to-zip .zip-3 { left: 58.8mm; }
+
+/* 郵便番号4桁 */
+.to-zip .zip-4 { left: 66.0mm; }
+.to-zip .zip-5 { left: 72.9mm; }
+.to-zip .zip-6 { left: 79.8mm; }
+.to-zip .zip-7 { left: 86.7mm; }
+
+/* ==================== */
+/* 宛先住所（横書き）   */
+/* ==================== */
+.to-address {
+  position: absolute;
+  top: 62mm;
+  left: 15mm;
+  right: 15mm;
+  font-size: 11pt;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.to-address .addr-line1 {
+}
+
+.to-address .addr-line2 {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ==================== */
+/* 宛先氏名（横書き）   */
+/* ==================== */
+.to-names {
+  position: absolute;
+  top: 82mm;
+  left: 5mm;
+  right: 5mm;
+  font-size: 14pt;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.to-names .name-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.to-names .sei {
+  padding-right: 0.5em;
+  text-align: right;
+}
+
+.to-names .mei {
+  text-align: left;
+}
+
+.to-names .title {
+  padding-left: 0.5em;
+}
+
+/* ==================== */
+/* 差出人郵便番号       */
+/* ==================== */
+.from-zip {
+  position: absolute;
+}
+
+.from-zip .zip-digit {
+  position: absolute;
+  font-size: 13pt;
+  top: 122.5mm;
+  width: 4mm;
+  line-height: 6.8mm;
+  text-align: center;
+}
+
+/* 郵便番号3桁 */
+.from-zip .zip-1 { left: 6.5mm; }
+.from-zip .zip-2 { left: 10.5mm; }
+.from-zip .zip-3 { left: 14.5mm; }
+
+/* 郵便番号4桁 */
+.from-zip .zip-4 { left: 19.5mm; }
+.from-zip .zip-5 { left: 23.5mm; }
+.from-zip .zip-6 { left: 27.5mm; }
+.from-zip .zip-7 { left: 31.5mm; }
+
+/* ==================== */
+/* 差出人住所（横書き） */
+/* ==================== */
+.from-address {
+  position: absolute;
+  top: 116.5mm;
+  left: 7mm;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+
+.from-address .addr-line1 {
+}
+
+.from-address .addr-line2 {
+  margin-left: 1em;
+}
+
+/* ==================== */
+/* 差出人氏名（横書き） */
+/* ==================== */
+.from-names {
+  position: absolute;
+  top: 110.5mm;
+  left: 7mm;
+  font-size: 10pt;
+  line-height: 1.4;
+}
+
+.from-names .name-main {
+}
+
+.from-names .name-sub {
+  display: inline;
+  margin-left: 0.5em;
+}
+
+/* ==================== */
+/* 印刷用調整           */
+/* ==================== */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 印刷時は背景を非表示 */
+  .card {
+    background-image: none;
+  }
+}

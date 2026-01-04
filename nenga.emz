@@ -1,0 +1,101 @@
+---
+format: csv
+bind:
+  差出人: data | first
+preamble: |
+  {%- macro 値(v) %}{{ v|default('')|string|replace('nan', '') }}{% endmacro -%}
+  {%- macro 郵便番号欄(郵便番号) -%}
+    {%- for i in range(7) %}
+    <span class="zip-digit zip-{{ i + 1 }}">{{ 郵便番号[i] if i < 郵便番号|length else '' }}</span>
+    {%- endfor -%}
+  {%- endmacro -%}
+  {#- 住所の正規化 -#}
+  {%- macro 住所(row) -%}
+    {%- if   '住所・建物' in row %}{{ 値(row['住所・建物']).split(' ', 1)[0] }}
+    {%- elif '番地・建物' in row %}{{ 値(row['番地・建物']).split(' ', 1)[0] }}
+    {%- elif '住所'       in row %}{{ 値(row['住所']) }}
+    {%- elif '町域'       in row -%}
+      {%- if '番地' not in row %}{{ "町域があるのに番地がありません" | raise }}{% endif -%}
+      {{ 値(row['町域']) }}{{ 値(row['番地']) }}
+    {%- endif -%}
+  {%- endmacro -%}
+  {#- 建物の正規化 -#}
+  {%- macro 建物(row) -%}
+    {%- if   '住所・建物' in row %}{%- set parts = 値(row['住所・建物']).split(' ', 1) %}{{ parts[1] if parts|length > 1 else '' }}
+    {%- elif '番地・建物' in row %}{%- set parts = 値(row['番地・建物']).split(' ', 1) %}{{ parts[1] if parts|length > 1 else '' }}
+    {%- elif '建物'       in row %}{{ 値(row['建物']) }}
+    {%- endif -%}
+  {%- endmacro -%}
+  {#- スキップ判定: 備考欄に特定の文字列があればスキップ -#}
+  {%- macro スキップ対象(row) -%}
+    {{ 値(row['備考'])|regex_search('保留|済|喪中') }}
+  {%- endmacro -%}
+  {#- 郵便番号の正規化 -#}
+  {%- macro 郵便番号(row) -%}
+    {%- if   '〒'       in row %}{{ 値(row['〒']) }}
+    {%- elif '郵便番号' in row %}{{ 値(row['郵便番号']) }}
+    {%- endif -%}
+  {%- endmacro -%}
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>年賀状宛名</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+{%- for 宛先 in data[1:] if not スキップ対象(宛先) %}
+<section class="card">
+  <div class="to-zip">
+{{- 郵便番号欄(郵便番号(宛先).replace('-', '')) }}
+  </div>
+  <div class="to-address">
+    <p class="addr-line1">{{ 値(宛先['都道府県']) }}{{ 値(宛先['市区町村']) }}</p>
+    <p class="addr-line2">{{ 住所(宛先) }}</p>
+    {%- if 建物(宛先) %}
+    <p class="addr-line3">{{ 建物(宛先) }}</p>
+    {%- endif %}
+  </div>
+  {%- set 姓 = 値(宛先['姓']) %}
+  {%- set 名 = 値(宛先['名']) %}
+  {%- set 配偶者 = 値(宛先['配偶者']) %}
+  {%- set 子供 = 値(宛先['子供']) %}
+  <div class="to-names">
+    <table class="name-table">
+      <tr><td class="sei">{{ 姓 }}</td><td class="mei">{{ 名 }}</td><td class="title">様</td></tr>
+      {%- if 配偶者 %}
+      <tr><td class="sei"></td><td class="mei">{{ 配偶者 }}</td><td class="title">様</td></tr>
+      {%- endif %}
+      {%- if 子供 %}
+      {%- for 子 in 子供.split('・') %}
+      <tr><td class="sei"></td><td class="mei">{{ 子 }}</td><td class="title">様</td></tr>
+      {%- endfor %}
+      {%- endif %}
+    </table>
+  </div>
+  <div class="from-zip">
+{{- 郵便番号欄(郵便番号(差出人).replace('-', '')) }}
+  </div>
+  <div class="from-address">
+    <p class="addr-line1">{{ 値(差出人['都道府県']) }}{{ 値(差出人['市区町村']) }}{{ 住所(差出人) }}{% if 建物(差出人) %} {{ 建物(差出人) }}{% endif %}</p>
+  </div>
+  {%- set 姓 = 値(差出人['姓']) %}
+  {%- set 名 = 値(差出人['名']) %}
+  {%- set 配偶者 = 値(差出人['配偶者']) %}
+  {%- set 子供 = 値(差出人['子供']) %}
+  <div class="from-names">
+    <span class="name-main">{{ 姓 }} {{ 名 }}</span>
+    {%- if 配偶者 %}
+    <span class="name-sub">{{ 配偶者 }}</span>
+    {%- endif %}
+    {%- if 子供 %}
+    {%- for 子 in 子供.split('・') %}
+    <span class="name-sub">{{ 子 }}</span>
+    {%- endfor %}
+    {%- endif %}
+  </div>
+</section>
+{%- endfor %}
+</body>
+</html>

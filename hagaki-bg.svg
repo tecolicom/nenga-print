@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="100mm" height="148mm"
+     viewBox="0 0 100 148">
+
+  <defs>
+    <!-- 宛先郵便番号枠（5.7mm × 8mm） -->
+    <rect id="to-zip-box" width="5.7" height="8"/>
+    <!-- 差出人郵便番号枠（4mm × 6.8mm） -->
+    <rect id="from-zip-box" width="4" height="6.8"/>
+  </defs>
+
+  <!-- はがき外枠（参考用） -->
+  <rect x="0" y="0" width="100" height="148"
+        fill="none" stroke="#ccc" stroke-width="0.2"/>
+
+  <!-- 宛先郵便番号枠（7桁） -->
+  <!-- 位置: 上端から12mm、右端から8mm -->
+  <!-- 枠サイズ: 縦8mm × 横5.7mm -->
+  <!-- 間隔: 1.3mm（3桁目後は1.9mm） -->
+  <!-- 色: 金赤 #E60033 -->
+
+  <g id="to-zip-frame" stroke="#F5A0A0" fill="none">
+    <!-- 上3桁（太線 0.5mm）kon104実績値 -->
+    <g stroke-width="0.5">
+      <use href="#to-zip-box" x="44.4" y="12"/>
+      <use href="#to-zip-box" x="51.7" y="12"/>
+      <use href="#to-zip-box" x="58.8" y="12"/>
+    </g>
+
+    <!-- ハイフン -->
+    <line x1="64.5" y1="16" x2="65.5" y2="16" stroke-width="0.5"/>
+
+    <!-- 下4桁（細線 0.3mm）kon104実績値 -->
+    <g stroke-width="0.3">
+      <use href="#to-zip-box" x="66.0" y="12"/>
+      <use href="#to-zip-box" x="72.9" y="12"/>
+      <use href="#to-zip-box" x="79.8" y="12"/>
+      <use href="#to-zip-box" x="86.7" y="12"/>
+    </g>
+  </g>
+
+  <!-- 差出人郵便番号枠 -->
+  <!-- 位置: style.cssから top=122.5mm, width=4mm, height=6.8mm -->
+  <g id="from-zip-frame" stroke="#F5A0A0" fill="none" stroke-width="0.3">
+    <!-- 上3桁 -->
+    <use href="#from-zip-box" x="6.5" y="122.5"/>
+    <use href="#from-zip-box" x="10.5" y="122.5"/>
+    <use href="#from-zip-box" x="14.5" y="122.5"/>
+    <!-- ハイフン -->
+    <line x1="18.5" y1="125.9" x2="19.5" y2="125.9"/>
+    <!-- 下4桁 -->
+    <use href="#from-zip-box" x="19.5" y="122.5"/>
+    <use href="#from-zip-box" x="23.5" y="122.5"/>
+    <use href="#from-zip-box" x="27.5" y="122.5"/>
+    <use href="#from-zip-box" x="31.5" y="122.5"/>
+  </g>
+
+  <!-- 年賀はがき印刷済みエリア（住所を避けるべき領域） -->
+  <g id="nenga-reserved" fill="none" stroke-width="0.3">
+    <!-- 切手欄: 上8mm、左8mm、幅22mm、高さ22mm -->
+    <rect x="8" y="8" width="22" height="22" stroke="#F5A0A0"/>
+    <text x="19" y="20" font-size="3" font-family="sans-serif" fill="#F5A0A0" text-anchor="middle">STAMP</text>
+
+    <!-- 年賀欄: 幅15mm、高さ22mm、切手の4mm下、中心揃え(19-7.5=11.5) -->
+    <rect x="11.5" y="34" width="15" height="22" stroke="#F5A0A0"/>
+    <text x="19" y="46" font-size="3" font-family="sans-serif" fill="#F5A0A0" text-anchor="middle">SEAL</text>
+
+    <!-- お年玉くじエリア: 左右6mm、下5mm、高さ10mm -->
+    <rect x="6" y="133" width="88" height="10" stroke="#F5A0A0"/>
+    <text x="50" y="139" font-size="3" font-family="sans-serif" fill="#F5A0A0" text-anchor="middle">LOTTERY</text>
+  </g>
+
+</svg>
