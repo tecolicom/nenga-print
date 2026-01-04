@@ -8,6 +8,15 @@
 APPDIR  := /app
 WORKDIR := $(CURDIR)
 
+# ローカルファイルを優先（WORKDIR → APPDIR）
+vpath %.emz $(WORKDIR) $(APPDIR)
+vpath %.css $(WORKDIR) $(APPDIR)
+vpath %.svg $(WORKDIR) $(APPDIR)
+
+TEMPLATE      := nenga.emz
+STYLE_PRINTER := style-printer.css
+STYLE_PREVIEW := style-preview.css
+
 CSVS     := $(wildcard $(WORKDIR)/*.csv)
 PDFS     := $(CSVS:.csv=.pdf)
 PREVIEWS := $(CSVS:.csv=-preview.pdf)
@@ -16,13 +25,13 @@ PREVIEWS := $(CSVS:.csv=-preview.pdf)
 all: $(PDFS) $(PREVIEWS)
 
 # PDF 生成ルール
-%.pdf: %.csv
-	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
-	cd $(APPDIR) && vivliostyle build --style style-printer.css -o $@
+%.pdf: %.csv $(TEMPLATE) $(STYLE_PRINTER)
+	pandoc-embedz -s $(filter %.emz,$^) < $< > $(WORKDIR)/address.html
+	vivliostyle build $(WORKDIR)/address.html --style $(filter %.css,$^) -o $@
 
-%-preview.pdf: %.csv
-	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
-	cd $(APPDIR) && vivliostyle build --style style-preview.css -o $@
+%-preview.pdf: %.csv $(TEMPLATE) $(STYLE_PREVIEW)
+	pandoc-embedz -s $(filter %.emz,$^) < $< > $(WORKDIR)/address.html
+	vivliostyle build $(WORKDIR)/address.html --style $(filter %.css,$^) -o $@
 
 clean:
 	rm -f $(WORKDIR)/*.pdf
@@ -41,4 +50,8 @@ $(WORKDIR)/sample-preview.pdf: $(APPDIR)/sample.csv
 	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
 	cd $(APPDIR) && vivliostyle build --style style-preview.css -o $@
 
-.PHONY: all clean demo
+# Makefile をコピー（カスタマイズ用）
+Makefile: $(APPDIR)/Makefile
+	cp $< $(WORKDIR)/Makefile
+
+.PHONY: all clean demo Makefile

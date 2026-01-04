@@ -1,20 +1,23 @@
 #!/bin/sh
 # Entrypoint script for nenga-print Docker image
-# Transparently handles make commands to use /app/Makefile
+# Use /work/Makefile if exists, otherwise /app/Makefile
+
+if [ -f /work/Makefile ]; then
+    MAKEFILE=/work/Makefile
+else
+    MAKEFILE=/app/Makefile
+fi
 
 case "$1" in
     make)
         shift
-        exec make -f /app/Makefile "$@"
+        exec make -f "$MAKEFILE" "$@"
         ;;
-    clean)
-        exec make -f /app/Makefile clean
-        ;;
-    demo)
-        exec make -f /app/Makefile demo
+    clean|demo)
+        exec make -f "$MAKEFILE" "$1"
         ;;
     "")
-        exec make -f /app/Makefile
+        exec make -f "$MAKEFILE"
         ;;
     *)
         exec "$@"

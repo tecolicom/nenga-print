@@ -46,7 +46,10 @@ echo '-I tecolicom/nenga-print' > .dozorc
 dozo make          # PDF を生成
 dozo make clean    # PDF を削除
 dozo make demo     # デモ用 PDF を生成
+dozo make Makefile # Makefile をコピー（カスタマイズ用）
 ```
+
+`Makefile` が作業ディレクトリにある場合は、そちらが優先されます。
 
 生成されるファイル：
 - `*.pdf` - 印刷用（枠なし）
