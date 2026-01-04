@@ -62,6 +62,40 @@ dozo -I tecolicom/nenga-print make demo
 
 `sample.csv`、`sample.pdf`、`sample-preview.pdf` が生成されます。
 
+### リアルタイムプレビュー
+
+vivliostyle のプレビュー機能を使うと、ブラウザでリアルタイムに確認できます。
+
+`.dozorc` にポートマッピングを追加：
+
+```bash
+cat > .dozorc <<'EOF'
+-I tecolicom/nenga-print
+-P 8000:8000
+EOF
+```
+
+プレビューサーバーを起動：
+
+```bash
+dozo -L sh -c "cp /app/style*.css /app/*.svg /work/ && \
+  pandoc-embedz -s /app/nenga.emz < /work/*.csv > /work/address.html && \
+  vivliostyle preview /work/address.html --style /work/style-preview.css \
+  --port 8000 --host 0.0.0.0 --no-open-viewer"
+```
+
+ブラウザで以下を開く：
+
+```
+http://localhost:8000/__vivliostyle-viewer/index.html#src=http://localhost:8000/vivliostyle/address.html&bookMode=true&renderAllPages=true&style=/vivliostyle/style-preview.css
+```
+
+停止：
+
+```bash
+dozo -K
+```
+
 ### Docker を直接使用
 
 ```bash
