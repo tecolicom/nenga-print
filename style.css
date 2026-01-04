@@ -67,16 +67,23 @@ html, body {
 .to-zip .zip-7 { left: 86.7mm; }
 
 /* ==================== */
+/* 宛先コンテナ（下揃え） */
+/* ==================== */
+.to-main {
+  position: absolute;
+  bottom: 46mm;  /* 100mm ライン */
+  left: 5mm;
+  right: 5mm;
+  text-align: center;
+}
+
+/* ==================== */
 /* 宛先住所（横書き）   */
 /* ==================== */
 .to-address {
-  position: absolute;
-  top: 62mm;
-  left: 15mm;
-  right: 15mm;
   font-size: 11pt;
   line-height: 1.35;
-  text-align: center;
+  margin-bottom: 3mm;
 }
 
 .to-address .addr-line1 {
@@ -91,13 +98,8 @@ html, body {
 /* 宛先氏名（横書き）   */
 /* ==================== */
 .to-names {
-  position: absolute;
-  top: 82mm;
-  left: 5mm;
-  right: 5mm;
   font-size: 14pt;
   line-height: 1.6;
-  text-align: center;
 }
 
 .to-names .name-table {

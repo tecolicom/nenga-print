@@ -56,29 +56,31 @@ preamble: |
   <div class="to-zip">
 {{- 郵便番号欄(郵便番号(宛先).replace('-', '')) }}
   </div>
-  <div class="to-address">
-    <p class="addr-line1">{{ 値(宛先['都道府県']) }}{{ 値(宛先['市区町村']) }}</p>
-    <p class="addr-line2">{{ 住所(宛先) }}</p>
-    {%- if 建物(宛先) %}
-    <p class="addr-line3">{{ 建物(宛先) }}</p>
-    {%- endif %}
-  </div>
-  {%- set 姓 = 値(宛先['姓']) %}
-  {%- set 名 = 値(宛先['名']) %}
-  {%- set 配偶者名 = 値(宛先['配偶者']) %}
-  {%- set 家族名 = 家族(宛先) %}
-  <div class="to-names">
-    <table class="name-table">
-      <tr><td class="sei">{{ 姓 }}</td><td class="mei">{{ 名 }}</td><td class="title">様</td></tr>
-      {%- if 配偶者名 %}
-      <tr><td class="sei"></td><td class="mei">{{ 配偶者名 }}</td><td class="title">様</td></tr>
+  <div class="to-main">
+    <div class="to-address">
+      <p class="addr-line1">{{ 値(宛先['都道府県']) }}{{ 値(宛先['市区町村']) }}</p>
+      <p class="addr-line2">{{ 住所(宛先) }}</p>
+      {%- if 建物(宛先) %}
+      <p class="addr-line3">{{ 建物(宛先) }}</p>
       {%- endif %}
-      {%- if 家族名 %}
-      {%- for 子 in 家族名.split('・') %}
-      <tr><td class="sei"></td><td class="mei">{{ 子 }}</td><td class="title">様</td></tr>
-      {%- endfor %}
-      {%- endif %}
-    </table>
+    </div>
+    {%- set 姓 = 値(宛先['姓']) %}
+    {%- set 名 = 値(宛先['名']) %}
+    {%- set 配偶者名 = 値(宛先['配偶者']) %}
+    {%- set 家族名 = 家族(宛先) %}
+    <div class="to-names">
+      <table class="name-table">
+        <tr><td class="sei">{{ 姓 }}</td><td class="mei">{{ 名 }}</td><td class="title">様</td></tr>
+        {%- if 配偶者名 %}
+        <tr><td class="sei"></td><td class="mei">{{ 配偶者名 }}</td><td class="title">様</td></tr>
+        {%- endif %}
+        {%- if 家族名 %}
+        {%- for 子 in 家族名.split('・') %}
+        <tr><td class="sei"></td><td class="mei">{{ 子 }}</td><td class="title">様</td></tr>
+        {%- endfor %}
+        {%- endif %}
+      </table>
+    </div>
   </div>
   <div class="from-zip">
 {{- 郵便番号欄(郵便番号(差出人).replace('-', '')) }}
