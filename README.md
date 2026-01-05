@@ -15,34 +15,52 @@
 
 - Docker
 
-## 使い方
+## クイックスタート
 
-[dozo](https://github.com/tecolicom/App-dozo) を使うと簡潔に実行できます。
-dozo がない場合は以下の関数を定義すれば同様に使えます：
+以下のコマンドでサンプル PDF を生成できます：
 
 ```bash
-dozo() { docker run --rm -v "$(pwd):/work" tecolicom/nenga-print "$@"; }
+docker run --rm -v "$(pwd):/work" tecolicom/nenga-print demo
 ```
 
-### セットアップ
+`sample.csv`、`sample.pdf`（印刷用）、`sample.preview.pdf`（確認用）が生成されます。
 
-dozo を使う場合は `.dozorc` を作成します：
+## CSV フォーマット
+
+1行目はヘッダー、2行目が差出人、3行目以降が宛先です。
+
+| 列名 | 説明 | 別名 |
+|------|------|------|
+| 姓 | 姓 | |
+| 名 | 名 | |
+| 配偶者 | 配偶者の名前 | |
+| 家族 | 家族の名前（「・」または「／」区切り） | 子供 |
+| 郵便番号 | 郵便番号 | 〒 |
+| 都道府県 | 都道府県 | |
+| 市区町村 | 市区町村 | |
+| 番地・建物 | 町名番地（空白）建物名等 | |
+| 備考 | 「保留」「済」「喪中」でスキップ | |
+
+### 補足
+
+- 夫婦別姓：配偶者欄に「姓 名」をスペース区切りで記入
+- 家族の別姓：同様に「姓 名」形式で記入可
+
+## 使い方
+
+[dozo](https://github.com/tecolicom/App-dozo) を使うと簡潔に実行できます：
 
 ```bash
 echo '-I tecolicom/nenga-print' > .dozorc
 ```
 
-### デモ
-
-まずはサンプルで動作確認：
+dozo がない場合は以下の関数で単純な使い方なら代用できます：
 
 ```bash
-dozo make demo
+dozo() { docker run --rm -v "$(pwd):/work" tecolicom/nenga-print "$@"; }
 ```
 
-`sample.pdf` と `sample.preview.pdf` が生成されます。
-
-### 基本
+### PDF 生成
 
 ```bash
 dozo make                    # すべての CSV から PDF を生成
@@ -68,24 +86,13 @@ dozo make OFFSET="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm オフセット
 ### リアルタイムプレビュー
 
 vivliostyle のプレビュー機能を使うと、ブラウザでリアルタイムに確認できます。
+dozo を使う場合は `-P` オプションでポートを公開します：
 
 ```bash
 dozo -P 13000 make sample.preview
 ```
 
-別のポートを使う場合：
-
-```bash
-dozo -P 8000 make PORT=8000 sample.preview
-```
-
-ブラウザで表示された URL を開きます。`Ctrl+C` で停止します。
-
-ローカルに vivliostyle がインストールされていれば、`dozo make init` 後に直接実行できます：
-
-```bash
-make sample.preview
-```
+表示された URL をブラウザで開きます。`Ctrl+C` で停止。
 
 ## カスタマイズ
 
@@ -106,26 +113,11 @@ dozo make init
 - `.dozorc` - dozo 設定
 - `README.md` - 使い方
 
-## CSV フォーマット
+ローカルに vivliostyle がインストールされていれば、Docker なしで実行できます：
 
-1行目はヘッダー、2行目が差出人、3行目以降が宛先です。
-
-| 列名 | 説明 | 別名 |
-|------|------|------|
-| 姓 | 姓 | |
-| 名 | 名 | |
-| 配偶者 | 配偶者の名前 | |
-| 家族 | 家族の名前（「・」または「／」区切り） | 子供 |
-| 郵便番号 | 郵便番号 | 〒 |
-| 都道府県 | 都道府県 | |
-| 市区町村 | 市区町村 | |
-| 番地・建物 | 町名番地（空白）建物名等 | 町名番地・建物 |
-| 備考 | 「保留」「済」「喪中」でスキップ | |
-
-### 補足
-
-- 夫婦別姓：配偶者欄に「姓 名」をスペース区切りで記入
-- 家族の別姓：同様に「姓 名」形式で記入可
+```bash
+make sample.preview
+```
 
 ## 構成技術
 
