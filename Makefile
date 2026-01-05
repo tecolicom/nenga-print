@@ -1,11 +1,19 @@
 # nenga-print: 年賀状宛名印刷システム（/app 用）
 #
 # Usage:
-#   dozo make        # PDF生成（そのまま使える）
-#   dozo make init   # カスタマイズ用にファイルをコピー
-#   dozo make clean  # PDF削除
+#   dozo make                        # PDF生成
+#   dozo make SHIFT=-1.5mm           # 左シフト
+#   dozo make SHIFT="-1.5mm 0.5mm"   # X,Yシフト
+#   dozo make init                   # カスタマイズ用にファイルをコピー
+#   dozo make clean                  # PDF削除
 
 APPDIR  := /app
+
+# プリンタ補正用シフト transform: translate(X, Y)
+SHIFT ?=
+ifneq ($(SHIFT),)
+  SHIFT_CSS := --css "data:,.card{transform:translate($(SHIFT))}"
+endif
 
 # すべての CSV から PDF を生成
 CSVS     := $(wildcard *.csv)
@@ -17,7 +25,7 @@ all: $(PDFS) $(PREVIEWS)
 # PDF 生成ルール（/app で実行）
 %.pdf: %.csv
 	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $*.html
-	cd $(APPDIR) && vivliostyle build $*.html --style style-printer.css -o $(CURDIR)/$@
+	cd $(APPDIR) && vivliostyle build $*.html --style style.css $(SHIFT_CSS) -o $(CURDIR)/$@
 	rm -f $(APPDIR)/$*.html
 
 %.preview.pdf: %.csv
@@ -32,7 +40,6 @@ clean:
 init:
 	cp -n $(APPDIR)/nenga.emz .
 	cp -n $(APPDIR)/style.css .
-	cp -n $(APPDIR)/style-printer.css .
 	cp -n $(APPDIR)/style-preview.css .
 	cp -n $(APPDIR)/hagaki-bg.svg .
 	cp -n $(APPDIR)/grid.svg .

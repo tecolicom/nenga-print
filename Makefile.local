@@ -1,23 +1,29 @@
 # nenga-print: 年賀状宛名印刷システム（ローカル用）
 #
 # Usage:
-#   dozo make        # PDF生成
-#   dozo make clean  # PDF削除
+#   dozo make                        # PDF生成
+#   dozo make SHIFT=-1.5mm           # 左シフト
+#   dozo make SHIFT="-1.5mm 0.5mm"   # X,Yシフト
+#   dozo make clean                  # PDF削除
+
+# プリンタ補正用シフト transform: translate(X, Y)
+SHIFT ?=
+ifneq ($(SHIFT),)
+  SHIFT_CSS := --css "data:,.card{transform:translate($(SHIFT))}"
+endif
 
 # すべての CSV から PDF を生成
 CSVS     := $(wildcard *.csv)
 PDFS     := $(CSVS:.csv=.pdf)
 PREVIEWS := $(CSVS:.csv=.preview.pdf)
+HTMLS    := $(CSVS:.csv=.html)
 
 all: $(PDFS) $(PREVIEWS)
 
-# HTML ファイル
-HTMLS    := $(CSVS:.csv=.html)
-
 # PDF 生成ルール（/work で実行）
-%.pdf: %.csv nenga.emz style.css style-printer.css
+%.pdf: %.csv nenga.emz style.css
 	pandoc-embedz -s nenga.emz < $< > $*.html
-	vivliostyle build $*.html --style style-printer.css -o $@
+	vivliostyle build $*.html --style style.css $(SHIFT_CSS) -o $@
 
 %.preview.pdf: %.csv nenga.emz style.css style-preview.css hagaki-bg.svg grid.svg
 	pandoc-embedz -s nenga.emz < $< > $*.html

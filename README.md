@@ -7,22 +7,21 @@
 - Docker で完結（環境構築不要）
 - CSV を置いて実行するだけ
 - 印刷用 PDF とプレビュー用 PDF を生成
+- プリンタ補正オプション（SHIFT）
 - Web フォント使用（Klee One）
 - CSS 組版（vivliostyle）
 
 ## 必要環境
 
 - Docker
+- [dozo](https://github.com/tecolicom/App-dozo)（推奨）
 
 ## 使い方
 
-[dozo](https://github.com/tecolicom/App-dozo) を使用：
+### 基本
 
 ```bash
 # すべての CSV から PDF を生成
-dozo -I tecolicom/nenga-print
-
-# または
 dozo -I tecolicom/nenga-print make
 
 # 特定のファイルを生成
@@ -30,60 +29,62 @@ dozo -I tecolicom/nenga-print make Nenga-2026.pdf
 
 # PDF を削除
 dozo -I tecolicom/nenga-print make clean
-```
 
-### .dozorc を使用
-
-作業ディレクトリに `.dozorc` ファイルを作成しておくと、コマンドが簡潔になります：
-
-```bash
-echo '-I tecolicom/nenga-print' > .dozorc
-```
-
-以降は以下のコマンドで実行できます：
-
-```bash
-dozo make          # PDF を生成
-dozo make clean    # PDF を削除
-dozo make demo     # デモ用 PDF を生成
-dozo make Makefile # Makefile をコピー（カスタマイズ用）
-```
-
-`Makefile` が作業ディレクトリにある場合は、そちらが優先されます。
-
-生成されるファイル：
-- `*.pdf` - 印刷用（枠なし）
-- `*-preview.pdf` - プレビュー用（枠付き）
-
-### デモ
-
-`make demo` でサンプルデータから PDF を生成できます：
-
-```bash
+# デモ用 PDF を生成
 dozo -I tecolicom/nenga-print make demo
 ```
 
-`sample.csv`、`sample.pdf`、`sample-preview.pdf` が生成されます。
+生成されるファイル：
+- `*.pdf` - 印刷用（枠なし）
+- `*.preview.pdf` - プレビュー用（枠付き）
+
+### プリンタ補正
+
+印刷位置のズレを補正できます：
+
+```bash
+# 左に 1.5mm シフト
+dozo -I tecolicom/nenga-print make SHIFT=-1.5mm
+
+# 左に 1.5mm、上に 0.5mm シフト
+dozo -I tecolicom/nenga-print make SHIFT="-1.5mm, 0.5mm"
+```
+
+### カスタマイズ
+
+`make init` でテンプレートファイルをローカルにコピーし、カスタマイズできます：
+
+```bash
+dozo -I tecolicom/nenga-print make init
+```
+
+以下のファイルがコピーされます：
+- `nenga.emz` - テンプレート
+- `style.css` - 基本スタイル
+- `style-preview.css` - プレビュー用スタイル
+- `hagaki-bg.svg` - はがき背景
+- `grid.svg` - グリッド線
+- `Makefile` - ローカル用 Makefile
+- `.dozorc` - dozo 設定ファイル
+
+以降は `dozo make` だけで実行できます：
+
+```bash
+dozo make                        # PDF を生成
+dozo make SHIFT=-1.5mm           # シフト指定
+dozo make clean                  # PDF を削除
+```
 
 ### リアルタイムプレビュー
 
 vivliostyle のプレビュー機能を使うと、ブラウザでリアルタイムに確認できます。
 
-`.dozorc` にポートマッピングを追加：
+`make init` 後（または `.dozorc` にポートマッピングを追加後）：
 
 ```bash
-cat > .dozorc <<'EOF'
--I tecolicom/nenga-print
--P 8000:8000
-EOF
-```
-
-プレビューサーバーを起動：
-
-```bash
-dozo -L sh -c "cp /app/style*.css /app/*.svg /work/ && \
-  pandoc-embedz -s /app/nenga.emz < /work/*.csv > /work/address.html && \
-  vivliostyle preview /work/address.html --style /work/style-preview.css \
+dozo -L sh -c "cp /app/style*.css /app/*.svg /work/ 2>/dev/null; \
+  pandoc-embedz -s nenga.emz < *.csv > address.html && \
+  vivliostyle preview address.html --style style-preview.css \
   --port 8000 --host 0.0.0.0 --no-open-viewer"
 ```
 
@@ -103,13 +104,16 @@ dozo -K
 
 ```bash
 # PDF を生成
-docker run --rm -v "$PWD:/work" -w /work tecolicom/nenga-print
+docker run --rm -v "$PWD:/work" tecolicom/nenga-print
+
+# プリンタ補正
+docker run --rm -v "$PWD:/work" tecolicom/nenga-print make SHIFT=-1.5mm
 
 # デモ
-docker run --rm -v "$PWD:/work" -w /work tecolicom/nenga-print demo
+docker run --rm -v "$PWD:/work" tecolicom/nenga-print demo
 
 # クリーン
-docker run --rm -v "$PWD:/work" -w /work tecolicom/nenga-print clean
+docker run --rm -v "$PWD:/work" tecolicom/nenga-print clean
 ```
 
 ## ビルド
