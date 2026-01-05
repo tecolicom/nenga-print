@@ -71,14 +71,15 @@ dozo make init
 ### リアルタイムプレビュー
 
 vivliostyle のプレビュー機能を使うと、ブラウザでリアルタイムに確認できます。
-`.dozorc` にポートマッピングを追加してください：
-
-```
--P 8000:8000
-```
 
 ```bash
-dozo make sample.preview
+dozo -P 13000 make sample.preview
+```
+
+別のポートを使う場合：
+
+```bash
+dozo -P 8000 make PORT=8000 sample.preview
 ```
 
 ブラウザで表示された URL を開きます。`Ctrl+C` で停止します。

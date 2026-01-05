@@ -45,7 +45,7 @@ init:
 	cp -n $(APPDIR)/grid.svg .
 	cp -n $(APPDIR)/sample.csv .
 	cp -n $(APPDIR)/Makefile.local Makefile
-	@test -f .dozorc || printf '%s\n' '-I tecolicom/nenga-print' '-P 8000:8000' > .dozorc
+	@test -f .dozorc || printf '%s\n' '-I tecolicom/nenga-print' '#-P 13000' > .dozorc
 	@if [ -f README.md ]; then \
 		cp -n $(APPDIR)/README.local.md NENGA_README.md; \
 	else \
@@ -58,10 +58,11 @@ demo:
 	cp $(APPDIR)/sample.csv .
 	$(MAKE) -f $(APPDIR)/Makefile sample.pdf sample.preview.pdf
 
-# リアルタイムプレビュー（dozo make *.preview で実行）
+# リアルタイムプレビュー（dozo -P $(PORT) make *.preview で実行）
+PORT ?= 13000
 %.preview:
 	cp $(APPDIR)/style*.css $(APPDIR)/*.svg . 2>/dev/null || true
 	pandoc-embedz -s nenga.emz < $*.csv > $*.html
-	vivliostyle preview $*.html --style style-preview.css --port 8000 --host 0.0.0.0 --no-open-viewer
+	vivliostyle preview $*.html --style style-preview.css --port $(PORT) --host 0.0.0.0 --no-open-viewer
 
 .PHONY: all clean init demo
