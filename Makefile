@@ -43,8 +43,14 @@ init:
 	cp -n $(APPDIR)/style-preview.css .
 	cp -n $(APPDIR)/hagaki-bg.svg .
 	cp -n $(APPDIR)/grid.svg .
+	cp -n $(APPDIR)/sample.csv .
 	cp -n $(APPDIR)/Makefile.local Makefile
 	@test -f .dozorc || printf '%s\n' '-I tecolicom/nenga-print' '-P 8000:8000' > .dozorc
+	@if [ -f README.md ]; then \
+		cp -n $(APPDIR)/README.local.md NENGA_README.md; \
+	else \
+		cp -n $(APPDIR)/README.local.md README.md; \
+	fi
 	@echo "初期化完了。dozo make で PDF を生成できます。"
 
 # デモ用 PDF を生成

@@ -29,7 +29,7 @@ RUN pip install --break-system-packages git+https://github.com/tecolicom/pandoc-
 WORKDIR /app
 
 # Copy template, styles, and assets
-COPY nenga.emz Makefile Makefile.local ./
+COPY nenga.emz Makefile Makefile.local README.local.md ./
 COPY style*.css ./
 COPY hagaki-bg.svg grid.svg sample.csv ./
 COPY entrypoint.sh ./
