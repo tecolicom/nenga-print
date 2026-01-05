@@ -40,6 +40,8 @@ clean:
 init:
 	cp -n $(APPDIR)/nenga.emz .
 	cp -n $(APPDIR)/style.css .
+	cp -n $(APPDIR)/style-custom.css .
+	cp -n $(APPDIR)/style-zip.css .
 	cp -n $(APPDIR)/style-preview.css .
 	cp -n $(APPDIR)/hagaki-bg.svg .
 	cp -n $(APPDIR)/grid.svg .

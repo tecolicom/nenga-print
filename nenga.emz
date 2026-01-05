@@ -115,5 +115,27 @@ preamble: |
   </div>
 </section>
 {%- endfor %}
+<script>
+(function() {
+  const cards = document.querySelectorAll('.card');
+  if (cards.length === 0) return;
+  let current = 0;
+
+  function show(index) {
+    cards.forEach((c, i) => c.style.display = i === index ? 'block' : 'none');
+    document.title = `年賀状宛名 (${index + 1}/${cards.length})`;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      if (current < cards.length - 1) { current++; show(current); }
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      if (current > 0) { current--; show(current); }
+    }
+  });
+
+  show(0);
+})();
+</script>
 </body>
 </html>

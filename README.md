@@ -104,7 +104,9 @@ dozo make init
 
 以下のファイルがコピーされます：
 - `nenga.emz` - テンプレート
-- `style.css` - 基本スタイル
+- `style.css` - 基本レイアウト
+- `style-custom.css` - スタイル（カスタマイズ用）
+- `style-zip.css` - 郵便番号配置
 - `style-preview.css` - プレビュー用スタイル
 - `hagaki-bg.svg` - はがき背景
 - `grid.svg` - グリッド線

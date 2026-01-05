@@ -21,11 +21,11 @@ HTMLS    := $(CSVS:.csv=.html)
 all: $(PDFS) $(PREVIEWS)
 
 # PDF 生成ルール（/work で実行）
-%.pdf: %.csv nenga.emz style.css
+%.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css
 	pandoc-embedz -s nenga.emz < $< > $*.html
 	vivliostyle build $*.html --style style.css $(OFFSET_CSS) -o $@
 
-%.preview.pdf: %.csv nenga.emz style.css style-preview.css hagaki-bg.svg grid.svg
+%.preview.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css style-preview.css hagaki-bg.svg grid.svg
 	pandoc-embedz -s nenga.emz < $< > $*.html
 	vivliostyle build $*.html --style style-preview.css -o $@
 

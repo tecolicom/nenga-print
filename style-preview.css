@@ -1,3 +1,6 @@
+/* プレビュー用スタイル */
+@import url('style.css');
+
 /* プレビュー用オーバーライド：印刷時も背景を表示 */
 @media print {
   .card {

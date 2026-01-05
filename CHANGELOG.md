@@ -4,6 +4,7 @@
 
 ### Changed
 - SHIFT オプションを OFFSET に名称変更
+- CSS を分離（style-base.css: 基本レイアウト、style-zip.css: 郵便番号配置）
 
 ## [0.3.0] - 2025-01-05
 
