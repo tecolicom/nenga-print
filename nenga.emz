@@ -72,11 +72,21 @@ preamble: |
       <table class="name-table">
         <tr><td class="sei">{{ 姓 }}</td><td class="mei">{{ 名 }}</td><td class="title">様</td></tr>
         {%- if 配偶者名 %}
+        {%- set 配偶者 = 配偶者名.split(None, 1) %}
+        {%- if 配偶者|length > 1 %}
+        <tr><td class="sei">{{ 配偶者[0] }}</td><td class="mei">{{ 配偶者[1] }}</td><td class="title">様</td></tr>
+        {%- else %}
         <tr><td class="sei"></td><td class="mei">{{ 配偶者名 }}</td><td class="title">様</td></tr>
         {%- endif %}
+        {%- endif %}
         {%- if 家族名 %}
-        {%- for 子 in 家族名.split('・') %}
+        {%- for 子 in 家族名.replace('／', '・').split('・') %}
+        {%- set 子名 = 子.split(None, 1) %}
+        {%- if 子名|length > 1 %}
+        <tr><td class="sei">{{ 子名[0] }}</td><td class="mei">{{ 子名[1] }}</td><td class="title">様</td></tr>
+        {%- else %}
         <tr><td class="sei"></td><td class="mei">{{ 子 }}</td><td class="title">様</td></tr>
+        {%- endif %}
         {%- endfor %}
         {%- endif %}
       </table>
