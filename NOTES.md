@@ -14,14 +14,6 @@
 
 ## 設計上の決定
 
-### 2つの Makefile 構成
-
-- `Makefile` - Docker イメージ内 `/app` 用。`make init` で初期化。
-- `Makefile.local` - ローカル `/work` 用。`init` 時にコピーされる。
-
-vivliostyle が `/work` 外の CSS ファイルを参照できない制限があるため、
-`/app` で実行する方式と、ローカルにファイルをコピーする方式を分けた。
-
 ### OFFSET オプション
 
 プリンタの印刷位置ズレを補正するオプション。
@@ -58,24 +50,6 @@ dozo make OFFSET="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm
 
 Docker 内で作成されるファイルが 600 になる問題があった。
 `entrypoint.sh` で `umask 022` を設定して解決。
-
-## 削除したファイル
-
-### vivliostyle.config.js
-
-vivliostyle のデフォルト設定ファイル。
-`address.html` を参照する設定になっていたが、動的に生成する HTML ファイル名と
-競合するため削除。vivliostyle は `--style` オプションで直接指定する方式に統一。
-
-### style-printer.css
-
-プリンタ補正用 CSS。OFFSET オプションで代替したため削除。
-
-## リリース管理
-
-- セマンティックバージョニング（0.1.0 から開始）
-- GitHub Actions でタグプッシュ時に Docker イメージをビルド
-- amd64/arm64 マルチアーキテクチャ対応
 
 ## 拡張性
 

@@ -14,27 +14,31 @@
 ## 必要環境
 
 - Docker
-- [dozo](https://github.com/tecolicom/App-dozo)（推奨）
 
 ## 使い方
 
+[dozo](https://github.com/tecolicom/App-dozo) を使うと簡潔に実行できます。
+dozo がない場合は以下の関数を定義すれば同様に使えます：
+
+```bash
+dozo() { docker run --rm -v "$(pwd):/work" tecolicom/nenga-print "$@"; }
+```
+
 ### セットアップ
 
-`.dozorc` ファイルを作成して使用するイメージを指定します：
+dozo を使う場合は `.dozorc` を作成します：
 
 ```bash
 echo '-I tecolicom/nenga-print' > .dozorc
 ```
 
-以降の例は `.dozorc` があることを前提にしています。
-
 ### 基本
 
 ```bash
-dozo make                        # すべての CSV から PDF を生成
-dozo make Nenga-2026.pdf         # 特定のファイルを生成
-dozo make clean                  # PDF を削除
-dozo make demo                   # デモ用 PDF を生成
+dozo make                    # すべての CSV から PDF を生成
+dozo make address.pdf        # 特定のファイルを生成
+dozo make clean              # PDF を削除
+dozo make demo               # デモ用 PDF を生成
 ```
 
 生成されるファイル：
@@ -84,62 +88,44 @@ dozo -P 8000 make PORT=8000 sample.preview
 
 ブラウザで表示された URL を開きます。`Ctrl+C` で停止します。
 
-### Docker を直接使用
+ローカルに vivliostyle がインストールされていれば、`dozo make init` 後に直接実行できます：
 
 ```bash
-# PDF を生成
-docker run --rm -v "$(pwd):/work" tecolicom/nenga-print
-
-# プリンタ補正
-docker run --rm -v "$(pwd):/work" tecolicom/nenga-print make OFFSET=-1.5mm
-
-# デモ
-docker run --rm -v "$(pwd):/work" tecolicom/nenga-print demo
-
-# クリーン
-docker run --rm -v "$(pwd):/work" tecolicom/nenga-print clean
-```
-
-## ビルド
-
-```bash
-docker build -t tecolicom/nenga-print .
+make sample.preview
 ```
 
 ## CSV フォーマット
 
-1行目が差出人、2行目以降が宛先です。
+1行目はヘッダー、2行目が差出人、3行目以降が宛先です。
 
-| 列名 | 説明 | 必須 |
+| 列名 | 説明 | 別名 |
 |------|------|------|
-| 姓 | 姓 | ○ |
-| 名 | 名 | ○ |
+| 姓 | 姓 | |
+| 名 | 名 | |
 | 配偶者 | 配偶者の名前 | |
-| 子供 または 家族 | 家族の名前（・区切り） | |
-| 〒 または 郵便番号 | 郵便番号 | ○ |
+| 家族 | 家族の名前（「・」または「／」区切り） | 子供 |
+| 郵便番号 | 郵便番号 | 〒 |
 | 都道府県 | 都道府県 | |
-| 市区町村 | 市区町村 | ○ |
-| 住所 | 番地等 | △ |
-| 町域 + 番地 | 住所の別形式 | △ |
-| 建物 | 建物名・部屋番号 | |
+| 市区町村 | 市区町村 | |
+| 番地・建物 | 町名番地（空白）建物名等 | 町名番地・建物 |
 | 備考 | 「保留」「済」「喪中」でスキップ | |
 
-- 夫婦別姓の場合は、配偶者欄に「姓 名」をスペース区切りで記入
-- 子供も同様に、名前にスペースがあれば姓と名に分けて表示
-- 子供の区切りは「・」または「／」
-- 姓を空にして名にフルネームを記入する方法もあります
+### 補足
 
-住所は以下のいずれかの形式で指定：
-- `住所` 列
-- `住所・建物` 列（スペース区切り）
-- `番地・建物` 列（スペース区切り）
-- `町域` + `番地` 列
+- 夫婦別姓：配偶者欄に「姓 名」をスペース区切りで記入
+- 家族の別姓：同様に「姓 名」形式で記入可
 
 ## 構成技術
 
 - [pandoc-embedz](https://github.com/tecolicom/pandoc-embedz) - テンプレートエンジン
 - [vivliostyle](https://vivliostyle.org/) - CSS 組版
 - [Klee One](https://fonts.google.com/specimen/Klee+One) - フォント
+
+## ビルド
+
+```bash
+docker build -t tecolicom/nenga-print .
+```
 
 ## ライセンス
 
