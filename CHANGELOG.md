@@ -2,9 +2,18 @@
 
 ## [Unreleased]
 
+## [0.4] - 2025-01-05
+
+### Added
+- HTML 印刷対応（`make *.html` でブラウザ印刷用 HTML を生成）
+- 矢印キーでカード切り替え機能（HTML 表示時）
+- 画面表示用スタイル（グレー背景、中央配置、影）
+
 ### Changed
 - SHIFT オプションを OFFSET に名称変更
-- CSS を分離（style-base.css: 基本レイアウト、style-zip.css: 郵便番号配置）
+- CSS を分離（style.css、style-zip.css、style-custom.css）
+- 郵便番号フォント: Helvetica, font-weight: 100, サイズ縮小
+- OFFSET パラメータが PDF と HTML 両方で有効に
 
 ## [0.3.0] - 2025-01-05
 
