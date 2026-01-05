@@ -78,23 +78,10 @@ vivliostyle のプレビュー機能を使うと、ブラウザでリアルタ�
 ```
 
 ```bash
-dozo -L sh -c "cp /app/style*.css /app/*.svg /work/ 2>/dev/null; \
-  pandoc-embedz -s nenga.emz < *.csv > address.html && \
-  vivliostyle preview address.html --style style-preview.css \
-  --port 8000 --host 0.0.0.0 --no-open-viewer"
+dozo make sample.preview
 ```
 
-ブラウザで以下を開く：
-
-```
-http://localhost:8000/__vivliostyle-viewer/index.html#src=http://localhost:8000/vivliostyle/address.html&bookMode=true&renderAllPages=true&style=/vivliostyle/style-preview.css
-```
-
-停止：
-
-```bash
-dozo -K
-```
+ブラウザで表示された URL を開きます。`Ctrl+C` で停止します。
 
 ### Docker を直接使用
 

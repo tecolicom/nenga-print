@@ -32,4 +32,9 @@ all: $(PDFS) $(PREVIEWS)
 clean:
 	rm -f $(PDFS) $(PREVIEWS) $(HTMLS)
 
+# リアルタイムプレビュー（dozo make *.preview で実行）
+%.preview:
+	pandoc-embedz -s nenga.emz < $*.csv > $*.html
+	vivliostyle preview $*.html --style style-preview.css --port 8000 --host 0.0.0.0 --no-open-viewer
+
 .PHONY: all clean

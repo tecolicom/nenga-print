@@ -58,4 +58,10 @@ demo:
 	cp $(APPDIR)/sample.csv .
 	$(MAKE) -f $(APPDIR)/Makefile sample.pdf sample.preview.pdf
 
+# リアルタイムプレビュー（dozo make *.preview で実行）
+%.preview:
+	cp $(APPDIR)/style*.css $(APPDIR)/*.svg . 2>/dev/null || true
+	pandoc-embedz -s nenga.emz < $*.csv > $*.html
+	vivliostyle preview $*.html --style style-preview.css --port 8000 --host 0.0.0.0 --no-open-viewer
+
 .PHONY: all clean init demo
