@@ -1,6 +1,7 @@
 /* プリンタ補正用CSS */
+/* ローカルにコピーして調整してください */
 
-/* 全体をシフトして調整 */
 .card {
-  margin-left: -1.5mm;
+  margin-left: 0;
+  margin-top: 0;
 }

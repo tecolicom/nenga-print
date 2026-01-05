@@ -28,10 +28,10 @@ RUN pip install --break-system-packages git+https://github.com/tecolicom/pandoc-
 
 WORKDIR /app
 
-# Copy template, styles, config, and assets
-COPY nenga.emz Makefile vivliostyle.config.js ./
+# Copy template, styles, and assets
+COPY nenga.emz Makefile Makefile.local ./
 COPY style*.css ./
-COPY hagaki-bg.svg grid-only.svg sample.csv ./
+COPY hagaki-bg.svg grid.svg sample.csv ./
 COPY entrypoint.sh ./
 RUN chmod +x /app/entrypoint.sh
 

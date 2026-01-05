@@ -1,0 +1,29 @@
+# nenga-print: 年賀状宛名印刷システム（ローカル用）
+#
+# Usage:
+#   dozo make        # PDF生成
+#   dozo make clean  # PDF削除
+
+# すべての CSV から PDF を生成
+CSVS     := $(wildcard *.csv)
+PDFS     := $(CSVS:.csv=.pdf)
+PREVIEWS := $(CSVS:.csv=.preview.pdf)
+
+all: $(PDFS) $(PREVIEWS)
+
+# HTML ファイル
+HTMLS    := $(CSVS:.csv=.html)
+
+# PDF 生成ルール（/work で実行）
+%.pdf: %.csv nenga.emz style.css style-printer.css
+	pandoc-embedz -s nenga.emz < $< > $*.html
+	vivliostyle build $*.html --style style-printer.css -o $@
+
+%.preview.pdf: %.csv nenga.emz style.css style-preview.css hagaki-bg.svg grid.svg
+	pandoc-embedz -s nenga.emz < $< > $*.html
+	vivliostyle build $*.html --style style-preview.css -o $@
+
+clean:
+	rm -f $(PDFS) $(PREVIEWS) $(HTMLS)
+
+.PHONY: all clean

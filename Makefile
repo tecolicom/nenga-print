@@ -1,57 +1,48 @@
-# nenga-print: 年賀状宛名印刷システム
+# nenga-print: 年賀状宛名印刷システム（/app 用）
 #
 # Usage:
-#   dozo -I tecolicom/nenga-print make
-#   dozo -I tecolicom/nenga-print make Nenga-2026.pdf
-#   dozo -I tecolicom/nenga-print make clean
+#   dozo make        # PDF生成（そのまま使える）
+#   dozo make init   # カスタマイズ用にファイルをコピー
+#   dozo make clean  # PDF削除
 
 APPDIR  := /app
-WORKDIR := $(CURDIR)
-
-# ローカルファイルを優先（WORKDIR → APPDIR）
-vpath %.emz $(WORKDIR) $(APPDIR)
-vpath %.css $(WORKDIR) $(APPDIR)
-vpath %.svg $(WORKDIR) $(APPDIR)
-
-TEMPLATE      := nenga.emz
-STYLE_PRINTER := style-printer.css
-STYLE_PREVIEW := style-preview.css
-
-CSVS     := $(wildcard $(WORKDIR)/*.csv)
-PDFS     := $(CSVS:.csv=.pdf)
-PREVIEWS := $(CSVS:.csv=-preview.pdf)
 
 # すべての CSV から PDF を生成
+CSVS     := $(wildcard *.csv)
+PDFS     := $(CSVS:.csv=.pdf)
+PREVIEWS := $(CSVS:.csv=.preview.pdf)
+
 all: $(PDFS) $(PREVIEWS)
 
-# PDF 生成ルール
-%.pdf: %.csv $(TEMPLATE) $(STYLE_PRINTER)
-	pandoc-embedz -s $(filter %.emz,$^) < $< > $(WORKDIR)/address.html
-	vivliostyle build $(WORKDIR)/address.html --style $(filter %.css,$^) -o $@
+# PDF 生成ルール（/app で実行）
+%.pdf: %.csv
+	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $*.html
+	cd $(APPDIR) && vivliostyle build $*.html --style style-printer.css -o $(CURDIR)/$@
+	rm -f $(APPDIR)/$*.html
 
-%-preview.pdf: %.csv $(TEMPLATE) $(STYLE_PREVIEW)
-	pandoc-embedz -s $(filter %.emz,$^) < $< > $(WORKDIR)/address.html
-	vivliostyle build $(WORKDIR)/address.html --style $(filter %.css,$^) -o $@
+%.preview.pdf: %.csv
+	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $*.html
+	cd $(APPDIR) && vivliostyle build $*.html --style style-preview.css -o $(CURDIR)/$@
+	rm -f $(APPDIR)/$*.html
 
 clean:
-	rm -f $(WORKDIR)/*.pdf
+	rm -f $(PDFS) $(PREVIEWS)
+
+# カスタマイズ用にファイルをコピー（既存は上書きしない）
+init:
+	cp -n $(APPDIR)/nenga.emz .
+	cp -n $(APPDIR)/style.css .
+	cp -n $(APPDIR)/style-printer.css .
+	cp -n $(APPDIR)/style-preview.css .
+	cp -n $(APPDIR)/hagaki-bg.svg .
+	cp -n $(APPDIR)/grid.svg .
+	cp -n $(APPDIR)/Makefile.local Makefile
+	@test -f .dozorc || printf '%s\n' '-I tecolicom/nenga-print' '-P 8000:8000' > .dozorc
+	@echo "初期化完了。dozo make で PDF を生成できます。"
 
 # デモ用 PDF を生成
-demo: $(WORKDIR)/sample.csv $(WORKDIR)/sample.pdf $(WORKDIR)/sample-preview.pdf
+demo:
+	cp $(APPDIR)/sample.csv .
+	$(MAKE) -f $(APPDIR)/Makefile sample.pdf sample.preview.pdf
 
-$(WORKDIR)/sample.csv: $(APPDIR)/sample.csv
-	cp $< $@
-
-$(WORKDIR)/sample.pdf: $(APPDIR)/sample.csv
-	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
-	cd $(APPDIR) && vivliostyle build --style style-printer.css -o $@
-
-$(WORKDIR)/sample-preview.pdf: $(APPDIR)/sample.csv
-	pandoc-embedz -s $(APPDIR)/nenga.emz < $< > $(APPDIR)/address.html
-	cd $(APPDIR) && vivliostyle build --style style-preview.css -o $@
-
-# Makefile をコピー（カスタマイズ用）
-Makefile: $(APPDIR)/Makefile
-	cp $< $(WORKDIR)/Makefile
-
-.PHONY: all clean demo Makefile
+.PHONY: all clean init demo

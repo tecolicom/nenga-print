@@ -10,7 +10,7 @@
     left: 0;
     width: 100mm;
     height: 148mm;
-    background-image: url('grid-only.svg'), url('hagaki-bg.svg');
+    background-image: url('grid.svg'), url('hagaki-bg.svg');
     background-size: 100mm 148mm, 100mm 148mm;
     background-repeat: no-repeat, no-repeat;
     z-index: -1;

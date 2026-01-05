@@ -1,14 +1,11 @@
 // @ts-check
 /** @type {import('@vivliostyle/cli').VivliostyleConfigSchema} */
 const vivliostyleConfig = {
-  title: '年賀状宛名 2026',
+  title: '年賀状宛名',
   author: '歌代 和正',
   language: 'ja',
   size: '100mm 148mm',
-  entry: [
-    'address.html'
-  ],
-  output: 'nenga.pdf'
+  entry: ['address.html'],
 };
 
 module.exports = vivliostyleConfig;
