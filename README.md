@@ -32,13 +32,22 @@ dozo を使う場合は `.dozorc` を作成します：
 echo '-I tecolicom/nenga-print' > .dozorc
 ```
 
+### デモ
+
+まずはサンプルで動作確認：
+
+```bash
+dozo make demo
+```
+
+`sample.pdf` と `sample.preview.pdf` が生成されます。
+
 ### 基本
 
 ```bash
 dozo make                    # すべての CSV から PDF を生成
 dozo make address.pdf        # 特定のファイルを生成
 dozo make clean              # PDF を削除
-dozo make demo               # デモ用 PDF を生成
 ```
 
 生成されるファイル：
@@ -54,23 +63,7 @@ dozo make OFFSET=-1.5mm           # 左に 1.5mm オフセット
 dozo make OFFSET="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm オフセット
 ```
 
-### カスタマイズ
-
-`make init` でテンプレートファイルをローカルにコピーし、カスタマイズできます：
-
-```bash
-dozo make init
-```
-
-以下のファイルがコピーされます：
-- `nenga.emz` - テンプレート
-- `style.css` - 基本スタイル
-- `style-preview.css` - プレビュー用スタイル
-- `hagaki-bg.svg` - はがき背景
-- `grid.svg` - グリッド線
-- `Makefile` - ローカル用 Makefile
-- `sample.csv` - サンプル CSV
-- `README.md` - 使い方
+補正は印刷用 PDF のみに適用され、プレビュー用 PDF には影響しません。
 
 ### リアルタイムプレビュー
 
@@ -93,6 +86,25 @@ dozo -P 8000 make PORT=8000 sample.preview
 ```bash
 make sample.preview
 ```
+
+## カスタマイズ
+
+`make init` でテンプレートファイルをローカルにコピーし、カスタマイズできます：
+
+```bash
+dozo make init
+```
+
+以下のファイルがコピーされます：
+- `nenga.emz` - テンプレート
+- `style.css` - 基本スタイル
+- `style-preview.css` - プレビュー用スタイル
+- `hagaki-bg.svg` - はがき背景
+- `grid.svg` - グリッド線
+- `Makefile` - ローカル用 Makefile
+- `sample.csv` - サンプル CSV
+- `.dozorc` - dozo 設定
+- `README.md` - 使い方
 
 ## CSV フォーマット
 
