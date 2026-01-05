@@ -7,7 +7,7 @@
 - Docker で完結（環境構築不要）
 - CSV を置いて実行するだけ
 - 印刷用 PDF とプレビュー用 PDF を生成
-- プリンタ補正オプション（SHIFT）
+- プリンタ補正オプション（OFFSET）
 - Web フォント使用（Klee One）
 - CSS 組版（vivliostyle）
 
@@ -46,8 +46,8 @@ dozo make demo                   # デモ用 PDF を生成
 印刷位置のズレを補正できます：
 
 ```bash
-dozo make SHIFT=-1.5mm           # 左に 1.5mm シフト
-dozo make SHIFT="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm シフト
+dozo make OFFSET=-1.5mm           # 左に 1.5mm オフセット
+dozo make OFFSET="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm オフセット
 ```
 
 ### カスタマイズ
@@ -91,7 +91,7 @@ dozo -P 8000 make PORT=8000 sample.preview
 docker run --rm -v "$(pwd):/work" tecolicom/nenga-print
 
 # プリンタ補正
-docker run --rm -v "$(pwd):/work" tecolicom/nenga-print make SHIFT=-1.5mm
+docker run --rm -v "$(pwd):/work" tecolicom/nenga-print make OFFSET=-1.5mm
 
 # デモ
 docker run --rm -v "$(pwd):/work" tecolicom/nenga-print demo

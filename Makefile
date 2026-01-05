@@ -2,17 +2,17 @@
 #
 # Usage:
 #   dozo make                        # PDF生成
-#   dozo make SHIFT=-1.5mm           # 左シフト
-#   dozo make SHIFT="-1.5mm 0.5mm"   # X,Yシフト
+#   dozo make OFFSET=-1.5mm          # 左オフセット
+#   dozo make OFFSET="-1.5mm 0.5mm"  # X,Yオフセット
 #   dozo make init                   # カスタマイズ用にファイルをコピー
 #   dozo make clean                  # PDF削除
 
 APPDIR  := /app
 
-# プリンタ補正用シフト transform: translate(X, Y)
-SHIFT ?=
-ifneq ($(SHIFT),)
-  SHIFT_CSS := --css "data:,.card{transform:translate($(SHIFT))}"
+# プリンタ補正用オフセット transform: translate(X, Y)
+OFFSET ?=
+ifneq ($(OFFSET),)
+  OFFSET_CSS := --css "data:,.card{transform:translate($(OFFSET))}"
 endif
 
 # すべての CSV から PDF を生成
@@ -25,7 +25,7 @@ all: $(PDFS) $(PREVIEWS)
 # PDF 生成ルール（/app で実行）
 %.pdf: %.csv
 	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $*.html
-	cd $(APPDIR) && vivliostyle build $*.html --style style.css $(SHIFT_CSS) -o $(CURDIR)/$@
+	cd $(APPDIR) && vivliostyle build $*.html --style style.css $(OFFSET_CSS) -o $(CURDIR)/$@
 	rm -f $(APPDIR)/$*.html
 
 %.preview.pdf: %.csv

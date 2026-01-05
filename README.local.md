@@ -13,8 +13,8 @@ dozo() { docker run --rm -v "$(pwd):/work" tecolicom/nenga-print "$@"; }
 
 ```bash
 dozo make                        # PDF を生成
-dozo make SHIFT=-1.5mm           # プリンタ補正（左に 1.5mm）
-dozo make SHIFT="-1.5mm, 0.5mm"  # X,Y 両方指定
+dozo make OFFSET=-1.5mm           # プリンタ補正（左に 1.5mm）
+dozo make OFFSET="-1.5mm, 0.5mm"  # X,Y 両方指定
 dozo make clean                  # PDF を削除
 ```
 

@@ -22,13 +22,13 @@
 vivliostyle が `/work` 外の CSS ファイルを参照できない制限があるため、
 `/app` で実行する方式と、ローカルにファイルをコピーする方式を分けた。
 
-### SHIFT オプション
+### OFFSET オプション
 
 プリンタの印刷位置ズレを補正するオプション。
 
 ```bash
-dozo make SHIFT=-1.5mm           # 左に 1.5mm
-dozo make SHIFT="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm
+dozo make OFFSET=-1.5mm           # 左に 1.5mm
+dozo make OFFSET="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm
 ```
 
 実装: `--css "data:,.card{transform:translate(X, Y)}"` で vivliostyle に渡す。
@@ -69,7 +69,7 @@ vivliostyle のデフォルト設定ファイル。
 
 ### style-printer.css
 
-プリンタ補正用 CSS。SHIFT オプションで代替したため削除。
+プリンタ補正用 CSS。OFFSET オプションで代替したため削除。
 
 ## リリース管理
 
