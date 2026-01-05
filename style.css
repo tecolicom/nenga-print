@@ -58,8 +58,8 @@
     print-color-adjust: exact;
   }
 
-  /* 印刷時は背景を非表示 */
   .card {
+    display: block !important;  /* JS の display:none を上書き */
     background-image: none;
   }
 }

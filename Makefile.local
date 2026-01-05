@@ -20,6 +20,15 @@ HTMLS    := $(CSVS:.csv=.html)
 
 all: $(PDFS) $(PREVIEWS)
 
+# style-printer.css を生成（OFFSET があれば適用）
+style-printer.css:
+	@printf '@media print {\n  .card {\n    transform: translate(%s);\n  }\n}\n' \
+		"$(if $(OFFSET),$(OFFSET),0)" > style-printer.css
+
+# HTML 生成ルール
+%.html: %.csv nenga.emz style.css style-custom.css style-zip.css style-printer.css
+	pandoc-embedz -s nenga.emz < $< > $@
+
 # PDF 生成ルール（/work で実行）
 %.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css
 	pandoc-embedz -s nenga.emz < $< > $*.html
@@ -30,7 +39,7 @@ all: $(PDFS) $(PREVIEWS)
 	vivliostyle build $*.html --style style-preview.css -o $@
 
 clean:
-	rm -f $(PDFS) $(PREVIEWS) $(HTMLS)
+	rm -f $(PDFS) $(PREVIEWS) $(HTMLS) style-printer.css
 
 # リアルタイムプレビュー（make *.preview または dozo -P $(PORT) make *.preview で実行）
 PORT ?= 13000

@@ -15,12 +15,24 @@ ifneq ($(OFFSET),)
   OFFSET_CSS := --css "data:,.card{transform:translate($(OFFSET))}"
 endif
 
-# すべての CSV から PDF を生成
+# すべての CSV から PDF/HTML を生成
 CSVS     := $(wildcard *.csv)
 PDFS     := $(CSVS:.csv=.pdf)
 PREVIEWS := $(CSVS:.csv=.preview.pdf)
+HTMLS    := $(CSVS:.csv=.html)
 
 all: $(PDFS) $(PREVIEWS)
+
+# style-printer.css を生成（OFFSET があれば適用）
+style-printer.css:
+	@printf '@media print {\n  .card {\n    transform: translate(%s);\n  }\n}\n' \
+		"$(if $(OFFSET),$(OFFSET),0)" > $(CURDIR)/style-printer.css
+
+# HTML 生成ルール
+%.html: %.csv style-printer.css
+	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $(CURDIR)/$@
+	cp $(APPDIR)/style*.css $(APPDIR)/*.svg $(CURDIR)/ 2>/dev/null || true
+	cp $(CURDIR)/style-printer.css $(CURDIR)/style-printer.css 2>/dev/null || true
 
 # PDF 生成ルール（/app で実行）
 %.pdf: %.csv
@@ -34,7 +46,7 @@ all: $(PDFS) $(PREVIEWS)
 	rm -f $(APPDIR)/$*.html
 
 clean:
-	rm -f $(PDFS) $(PREVIEWS)
+	rm -f $(PDFS) $(PREVIEWS) $(HTMLS) style-printer.css
 
 # カスタマイズ用にファイルをコピー（既存は上書きしない）
 init:
@@ -43,6 +55,7 @@ init:
 	cp -n $(APPDIR)/style-custom.css .
 	cp -n $(APPDIR)/style-zip.css .
 	cp -n $(APPDIR)/style-preview.css .
+	cp -n $(APPDIR)/style-printer.css .
 	cp -n $(APPDIR)/hagaki-bg.svg .
 	cp -n $(APPDIR)/grid.svg .
 	cp -n $(APPDIR)/sample.csv .

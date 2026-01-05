@@ -49,6 +49,7 @@ preamble: |
 <meta charset="UTF-8">
 <title>年賀状宛名</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style-printer.css">
 </head>
 <body>
 {%- for 宛先 in data[1:] if not スキップ対象(宛先) %}
