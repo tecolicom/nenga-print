@@ -1,16 +1,14 @@
 #!/bin/sh
 # Entrypoint script for nenga-print Docker image
-# Use /work/Makefile if exists, otherwise /app/Makefile
+# Use local Makefile if exists, otherwise /app/Makefile
 
 umask 022
 
-if [ -f /work/Makefile ]; then
-    MAKEFILE=/work/Makefile
+if [ -f Makefile ]; then
+    MAKEFILE=Makefile
 else
     MAKEFILE=/app/Makefile
 fi
-
-cd /work
 
 case "$1" in
     make)
