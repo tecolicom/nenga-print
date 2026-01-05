@@ -18,20 +18,23 @@
 
 ## 使い方
 
+### セットアップ
+
+`.dozorc` ファイルを作成して使用するイメージを指定します：
+
+```bash
+echo '-I tecolicom/nenga-print' > .dozorc
+```
+
+以降の例は `.dozorc` があることを前提にしています。
+
 ### 基本
 
 ```bash
-# すべての CSV から PDF を生成
-dozo -I tecolicom/nenga-print make
-
-# 特定のファイルを生成
-dozo -I tecolicom/nenga-print make Nenga-2026.pdf
-
-# PDF を削除
-dozo -I tecolicom/nenga-print make clean
-
-# デモ用 PDF を生成
-dozo -I tecolicom/nenga-print make demo
+dozo make                        # すべての CSV から PDF を生成
+dozo make Nenga-2026.pdf         # 特定のファイルを生成
+dozo make clean                  # PDF を削除
+dozo make demo                   # デモ用 PDF を生成
 ```
 
 生成されるファイル：
@@ -43,11 +46,8 @@ dozo -I tecolicom/nenga-print make demo
 印刷位置のズレを補正できます：
 
 ```bash
-# 左に 1.5mm シフト
-dozo -I tecolicom/nenga-print make SHIFT=-1.5mm
-
-# 左に 1.5mm、上に 0.5mm シフト
-dozo -I tecolicom/nenga-print make SHIFT="-1.5mm, 0.5mm"
+dozo make SHIFT=-1.5mm           # 左に 1.5mm シフト
+dozo make SHIFT="-1.5mm, 0.5mm"  # 左に 1.5mm、上に 0.5mm シフト
 ```
 
 ### カスタマイズ
@@ -55,7 +55,7 @@ dozo -I tecolicom/nenga-print make SHIFT="-1.5mm, 0.5mm"
 `make init` でテンプレートファイルをローカルにコピーし、カスタマイズできます：
 
 ```bash
-dozo -I tecolicom/nenga-print make init
+dozo make init
 ```
 
 以下のファイルがコピーされます：
@@ -65,21 +65,17 @@ dozo -I tecolicom/nenga-print make init
 - `hagaki-bg.svg` - はがき背景
 - `grid.svg` - グリッド線
 - `Makefile` - ローカル用 Makefile
-- `.dozorc` - dozo 設定ファイル
-
-以降は `dozo make` だけで実行できます：
-
-```bash
-dozo make                        # PDF を生成
-dozo make SHIFT=-1.5mm           # シフト指定
-dozo make clean                  # PDF を削除
-```
+- `sample.csv` - サンプル CSV
+- `README.md` - 使い方
 
 ### リアルタイムプレビュー
 
 vivliostyle のプレビュー機能を使うと、ブラウザでリアルタイムに確認できます。
+`.dozorc` にポートマッピングを追加してください：
 
-`make init` 後（または `.dozorc` にポートマッピングを追加後）：
+```
+-P 8000:8000
+```
 
 ```bash
 dozo -L sh -c "cp /app/style*.css /app/*.svg /work/ 2>/dev/null; \
@@ -104,16 +100,16 @@ dozo -K
 
 ```bash
 # PDF を生成
-docker run --rm -v "$PWD:/work" tecolicom/nenga-print
+docker run --rm -v "$(pwd):/work" tecolicom/nenga-print
 
 # プリンタ補正
-docker run --rm -v "$PWD:/work" tecolicom/nenga-print make SHIFT=-1.5mm
+docker run --rm -v "$(pwd):/work" tecolicom/nenga-print make SHIFT=-1.5mm
 
 # デモ
-docker run --rm -v "$PWD:/work" tecolicom/nenga-print demo
+docker run --rm -v "$(pwd):/work" tecolicom/nenga-print demo
 
 # クリーン
-docker run --rm -v "$PWD:/work" tecolicom/nenga-print clean
+docker run --rm -v "$(pwd):/work" tecolicom/nenga-print clean
 ```
 
 ## ビルド

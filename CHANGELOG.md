@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.2] - 2025-01-05
+
+### Changed
+- Dockerfile: デフォルト WORKDIR を /work に変更
+- README: .dozorc セットアップを最初に説明、例を簡略化
+- grid.svg: SVG pattern を使用して大幅に簡略化
+
+### Fixed
+- Docker を -w オプションなしで実行した場合の動作を修正
+
 ## [0.1.1] - 2025-01-05
 
 ### Fixed

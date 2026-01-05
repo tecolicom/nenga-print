@@ -5,10 +5,10 @@
 ## 使い方
 
 [dozo](https://github.com/tecolicom/App-dozo) がインストールされていればそのまま使えます。
-ない場合は以下の変数を設定してください：
+ない場合は以下の関数を定義してください：
 
 ```bash
-dozo="docker run --rm -v \$PWD:/work tecolicom/nenga-print"
+dozo() { docker run --rm -v "$(pwd):/work" tecolicom/nenga-print "$@"; }
 ```
 
 ```bash
@@ -62,4 +62,4 @@ dozo make clean                  # PDF を削除
 - [vivliostyle](https://vivliostyle.org/) - CSS 組版
 - [Klee One](https://fonts.google.com/specimen/Klee+One) - フォント
 
-詳細は [nenga-print README](https://github.com/tecolicom/nenga-print) を参照。
+詳細は [nenga-print README](https://github.com/tecolicom/nenga-print#readme) を参照。

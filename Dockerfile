@@ -29,11 +29,15 @@ RUN pip install --break-system-packages git+https://github.com/tecolicom/pandoc-
 WORKDIR /app
 
 # Copy template, styles, and assets
+# Files are installed to /app, but default working directory is /work for user data
 COPY nenga.emz Makefile Makefile.local README.local.md ./
 COPY style*.css ./
 COPY hagaki-bg.svg grid.svg sample.csv ./
 COPY entrypoint.sh ./
 RUN chmod +x /app/entrypoint.sh
+
+# Default working directory for user data
+WORKDIR /work
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD []
