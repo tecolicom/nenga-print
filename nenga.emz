@@ -127,13 +127,21 @@ preamble: |
     document.title = `年賀状宛名 (${index + 1}/${cards.length})`;
   }
 
+  function showAll() {
+    cards.forEach(c => c.style.display = 'block');
+  }
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    if (['ArrowRight', 'ArrowDown', 'j', 'f', ' '].includes(e.key)) {
       if (current < cards.length - 1) { current++; show(current); }
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    } else if (['ArrowLeft', 'ArrowUp', 'k', 'b'].includes(e.key)) {
       if (current > 0) { current--; show(current); }
     }
   });
+
+  // 印刷時は全カードを表示
+  window.addEventListener('beforeprint', showAll);
+  window.addEventListener('afterprint', () => show(current));
 
   show(0);
 })();
