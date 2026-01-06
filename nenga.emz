@@ -116,6 +116,7 @@ preamble: |
   </div>
 </section>
 {%- endfor %}
+<div id="help">g:grid h:bg ?:help</div>
 <script>
 (function() {
   const cards = document.querySelectorAll('.card');
@@ -132,10 +133,20 @@ preamble: |
   }
 
   document.addEventListener('keydown', (e) => {
-    if (['ArrowRight', 'ArrowDown', 'j', 'f', ' '].includes(e.key)) {
+    if (['ArrowRight', 'ArrowDown', 'j', 'f', ' ', 'PageDown'].includes(e.key)) {
       if (current < cards.length - 1) { current++; show(current); }
-    } else if (['ArrowLeft', 'ArrowUp', 'k', 'b'].includes(e.key)) {
+    } else if (['ArrowLeft', 'ArrowUp', 'k', 'b', 'PageUp'].includes(e.key)) {
       if (current > 0) { current--; show(current); }
+    } else if (e.key === 'Home') {
+      current = 0; show(current);
+    } else if (e.key === 'End') {
+      current = cards.length - 1; show(current);
+    } else if (e.key === 'g') {
+      document.body.classList.toggle('show-grid');
+    } else if (e.key === 'h') {
+      document.body.classList.toggle('hide-bg');
+    } else if (e.key === '?') {
+      document.getElementById('help').classList.toggle('hidden');
     }
   });
 
@@ -143,7 +154,12 @@ preamble: |
   window.addEventListener('beforeprint', showAll);
   window.addEventListener('afterprint', () => show(current));
 
-  show(0);
+  // ?print パラメータがあれば全カード表示
+  if (new URLSearchParams(window.location.search).has('print')) {
+    showAll();
+  } else {
+    show(0);
+  }
 })();
 </script>
 </body>

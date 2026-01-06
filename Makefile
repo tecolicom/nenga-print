@@ -21,7 +21,10 @@ HTMLS    := $(CSVS:.csv=.html)
 all: $(PDFS) $(PREVIEWS)
 
 # style-printer.css を生成（OFFSET があれば適用）
+# 依存関係がないため .PHONY で常に再生成
+.PHONY: style-printer.css
 style-printer.css:
+	@echo "Generating style-printer.css (OFFSET=$(if $(OFFSET),$(OFFSET),0))"
 	@printf '@media print {\n  .card {\n    transform: translate(%s);\n  }\n}\n' \
 		"$(if $(OFFSET),$(OFFSET),0)" > style-printer.css
 
@@ -30,7 +33,7 @@ style-printer.css:
 	pandoc-embedz -s nenga.emz < $< > $@
 
 # PDF 生成ルール（/work で実行）
-%.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css
+%.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css style-printer.css
 	pandoc-embedz -s nenga.emz < $< > $*.html
 	vivliostyle build $*.html --style style.css $(OFFSET_CSS) -o $@
 

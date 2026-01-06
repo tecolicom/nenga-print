@@ -1,4 +1,3 @@
-/* プリンタ補正用（make OFFSET=... で上書きされる） */
 @media print {
   .card {
     transform: translate(0);

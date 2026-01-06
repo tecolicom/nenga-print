@@ -50,7 +50,40 @@
 
   .card {
     background-color: white;
+    background-image: url('hagaki-bg.svg');
+    background-size: 100mm 148mm;
+    background-repeat: no-repeat;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* g/h キーでトグル */
+  .show-grid .card {
+    background-image: url('grid.svg'), url('hagaki-bg.svg');
+    background-size: 100mm 148mm, 100mm 148mm;
+    background-repeat: no-repeat, no-repeat;
+  }
+  .hide-bg .card {
+    background-image: none;
+  }
+  .show-grid.hide-bg .card {
+    background-image: url('grid.svg');
+    background-size: 100mm 148mm;
+  }
+
+  /* ヘルプ表示 */
+  #help {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+  }
+  #help.hidden {
+    display: none;
   }
 }
 
@@ -64,5 +97,16 @@
   .card {
     display: block !important;  /* JS の display:none を上書き */
     background-image: none;
+  }
+
+  /* g キーでgridオンの場合は印刷にも含める */
+  .show-grid .card {
+    background-image: url('grid.svg');
+    background-size: 100mm 148mm;
+    background-repeat: no-repeat;
+  }
+
+  #help {
+    display: none;
   }
 }
