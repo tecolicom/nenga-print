@@ -30,7 +30,9 @@ WORKDIR /app
 
 # Copy template, styles, and assets
 # Files are installed to /app, but default working directory is /work for user data
-COPY nenga.emz Makefile Makefile.local README.local.md ./
+COPY nenga.emz README.local.md ./
+COPY Makefile.docker Makefile
+COPY Makefile Makefile.local
 COPY style*.css ./
 COPY hagaki-bg.svg grid.svg sample.csv ./
 COPY entrypoint.sh ./

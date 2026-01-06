@@ -1,13 +1,10 @@
-# nenga-print: 年賀状宛名印刷システム（/app 用）
+# nenga-print: 年賀状宛名印刷システム（ローカル用）
 #
 # Usage:
 #   dozo make                        # PDF生成
 #   dozo make OFFSET=-1.5mm          # 左オフセット
 #   dozo make OFFSET="-1.5mm 0.5mm"  # X,Yオフセット
-#   dozo make init                   # カスタマイズ用にファイルをコピー
 #   dozo make clean                  # PDF削除
-
-APPDIR  := /app
 
 # プリンタ補正用オフセット transform: translate(X, Y)
 OFFSET ?=
@@ -15,7 +12,7 @@ ifneq ($(OFFSET),)
   OFFSET_CSS := --css "data:,.card{transform:translate($(OFFSET))}"
 endif
 
-# すべての CSV から PDF/HTML を生成
+# すべての CSV から PDF を生成
 CSVS     := $(wildcard *.csv)
 PDFS     := $(CSVS:.csv=.pdf)
 PREVIEWS := $(CSVS:.csv=.preview.pdf)
@@ -26,58 +23,32 @@ all: $(PDFS) $(PREVIEWS)
 # style-printer.css を生成（OFFSET があれば適用）
 style-printer.css:
 	@printf '@media print {\n  .card {\n    transform: translate(%s);\n  }\n}\n' \
-		"$(if $(OFFSET),$(OFFSET),0)" > $(CURDIR)/style-printer.css
+		"$(if $(OFFSET),$(OFFSET),0)" > style-printer.css
 
 # HTML 生成ルール
-%.html: %.csv style-printer.css
-	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $(CURDIR)/$@
-	cp $(APPDIR)/style*.css $(APPDIR)/*.svg $(CURDIR)/ 2>/dev/null || true
-	cp $(CURDIR)/style-printer.css $(CURDIR)/style-printer.css 2>/dev/null || true
+%.html: %.csv nenga.emz style.css style-custom.css style-zip.css style-printer.css
+	pandoc-embedz -s nenga.emz < $< > $@
 
-# PDF 生成ルール（/app で実行）
-%.pdf: %.csv
-	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $*.html
-	cd $(APPDIR) && vivliostyle build $*.html --style style.css $(OFFSET_CSS) -o $(CURDIR)/$@
-	rm -f $(APPDIR)/$*.html
+# PDF 生成ルール（/work で実行）
+%.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css
+	pandoc-embedz -s nenga.emz < $< > $*.html
+	vivliostyle build $*.html --style style.css $(OFFSET_CSS) -o $@
 
-%.preview.pdf: %.csv
-	cd $(APPDIR) && pandoc-embedz -s nenga.emz < $(CURDIR)/$< > $*.html
-	cd $(APPDIR) && vivliostyle build $*.html --style style-preview.css -o $(CURDIR)/$@
-	rm -f $(APPDIR)/$*.html
+%.preview.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css style-preview.css hagaki-bg.svg grid.svg
+	pandoc-embedz -s nenga.emz < $< > $*.html
+	vivliostyle build $*.html --style style-preview.css -o $@
 
 clean:
 	rm -f $(PDFS) $(PREVIEWS) $(HTMLS) style-printer.css
 
-# カスタマイズ用にファイルをコピー（既存は上書きしない）
-init:
-	cp -n $(APPDIR)/nenga.emz .
-	cp -n $(APPDIR)/style.css .
-	cp -n $(APPDIR)/style-custom.css .
-	cp -n $(APPDIR)/style-zip.css .
-	cp -n $(APPDIR)/style-preview.css .
-	cp -n $(APPDIR)/style-printer.css .
-	cp -n $(APPDIR)/hagaki-bg.svg .
-	cp -n $(APPDIR)/grid.svg .
-	cp -n $(APPDIR)/sample.csv .
-	cp -n $(APPDIR)/Makefile.local Makefile
-	@test -f .dozorc || printf '%s\n' '-I tecolicom/nenga-print' '#-P 13000' > .dozorc
-	@if [ -f README.md ]; then \
-		cp -n $(APPDIR)/README.local.md NENGA_README.md; \
-	else \
-		cp -n $(APPDIR)/README.local.md README.md; \
-	fi
-	@echo "初期化完了。dozo make で PDF を生成できます。"
-
-# デモ用 PDF を生成
-demo:
-	cp $(APPDIR)/sample.csv .
-	$(MAKE) -f $(APPDIR)/Makefile sample.pdf sample.preview.pdf
-
-# リアルタイムプレビュー（dozo -P $(PORT) make *.preview で実行）
+# リアルタイムプレビュー（make *.preview または dozo -P $(PORT) make *.preview で実行）
 PORT ?= 13000
 %.preview:
-	cp $(APPDIR)/style*.css $(APPDIR)/*.svg . 2>/dev/null || true
 	pandoc-embedz -s nenga.emz < $*.csv > $*.html
-	vivliostyle preview $*.html --style style-preview.css --port $(PORT) --host 0.0.0.0 --no-open-viewer
+	@if [ -f /.dockerenv ]; then \
+		vivliostyle preview $*.html --style style-preview.css --port $(PORT) --host 0.0.0.0 --no-open-viewer; \
+	else \
+		vivliostyle preview $*.html --style style-preview.css; \
+	fi
 
-.PHONY: all clean init demo
+.PHONY: all clean

@@ -15,8 +15,11 @@ case "$1" in
         shift
         exec make -f "$MAKEFILE" "$@"
         ;;
-    clean|demo|init)
+    clean)
         exec make -f "$MAKEFILE" "$1"
+        ;;
+    demo|init)
+        exec make -f /app/Makefile "$1"
         ;;
     "")
         exec make -f "$MAKEFILE"
