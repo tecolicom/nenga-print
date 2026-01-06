@@ -12,6 +12,10 @@ ifneq ($(OFFSET),)
   OFFSET_CSS := --css "data:,.card{transform:translate($(OFFSET))}"
 endif
 
+# スタイルファイル（Docker ビルド時に必要）
+CSS_FILES := style.css style-custom.css style-zip.css style-preview.css
+SVG_FILES := hagaki-bg.svg grid.svg
+
 # すべての CSV から PDF を生成
 CSVS     := $(wildcard *.csv)
 PDFS     := $(CSVS:.csv=.pdf)
@@ -37,7 +41,7 @@ style-printer.css:
 	pandoc-embedz -s nenga.emz < $< > $*.html
 	vivliostyle build $*.html --style style.css $(OFFSET_CSS) -o $@
 
-%.preview.pdf: %.csv nenga.emz style.css style-custom.css style-zip.css style-preview.css hagaki-bg.svg grid.svg
+%.preview.pdf: %.csv nenga.emz $(CSS_FILES) $(SVG_FILES)
 	pandoc-embedz -s nenga.emz < $< > $*.html
 	vivliostyle build $*.html --style style-preview.css -o $@
 
@@ -53,5 +57,11 @@ PORT ?= 13000
 	else \
 		vivliostyle preview $*.html --style style-preview.css; \
 	fi
+
+# Dockerfile 生成
+Dockerfile Dockerfile.light: %: %.in Makefile
+	sed -e 's/@CSS_FILES@/$(CSS_FILES)/' \
+	    -e 's/@SVG_FILES@/$(SVG_FILES)/' $< > $@
+	@echo "Generated $@"
 
 .PHONY: all clean

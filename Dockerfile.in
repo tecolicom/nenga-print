@@ -33,8 +33,8 @@ WORKDIR /app
 COPY nenga.emz README.local.md ./
 COPY Makefile.docker Makefile
 COPY Makefile Makefile.local
-COPY style*.css ./
-COPY hagaki-bg.svg grid.svg sample.csv ./
+COPY @CSS_FILES@ ./
+COPY @SVG_FILES@ sample.csv ./
 COPY entrypoint.sh ./
 RUN chmod +x /app/entrypoint.sh
 

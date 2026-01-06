@@ -5,3 +5,5 @@
 LICENSE
 README.md
 *.pdf
+style-printer.css
+Dockerfile*.in

@@ -1,0 +1,30 @@
+# nenga-print: 軽量版（HTML生成のみ）
+#
+# Usage:
+#   docker build -f Dockerfile.light -t nenga-print:light .
+#   docker run --rm -v "$(pwd):/work" nenga-print:light make sample.html
+#
+# vivliostyle/Chromiumを含まないため軽量（約300MB vs 2GB）
+
+FROM python:3.12-slim
+
+# Install make and pandoc-embedz
+RUN apt-get update && apt-get install -y --no-install-recommends make \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir pandoc-embedz
+
+WORKDIR /app
+
+# Copy template, styles, and Makefile
+COPY nenga.emz sample.csv ./
+COPY Makefile.docker Makefile
+COPY Makefile Makefile.local
+COPY @CSS_FILES@ ./
+COPY @SVG_FILES@ ./
+COPY entrypoint.sh ./
+RUN chmod +x /app/entrypoint.sh
+
+WORKDIR /work
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD []
