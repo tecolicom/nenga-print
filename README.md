@@ -7,9 +7,11 @@
 - Docker で完結（環境構築不要）
 - CSV を置いて実行するだけ
 - 印刷用 PDF とプレビュー用 PDF を生成
+- HTML 印刷対応（ブラウザで印刷）
 - プリンタ補正オプション（OFFSET）
 - Web フォント使用（Klee One）
 - CSS 組版（vivliostyle）
+- 軽量イメージ（`nenga-print:light`）で HTML のみ生成可
 
 ## 必要環境
 
@@ -71,6 +73,23 @@ dozo make clean              # PDF を削除
 生成されるファイル：
 - `*.pdf` - 印刷用（枠なし）
 - `*.preview.pdf` - プレビュー用（枠付き）
+- `*.html` - ブラウザ印刷用
+
+### HTML 印刷
+
+HTML ファイルをブラウザで開いて印刷することもできます：
+
+```bash
+dozo make sample.html
+open sample.html  # ブラウザで開く
+```
+
+キーボードショートカット：
+- `←` `→` `j` `k` - ページ切り替え
+- `Home` `End` - 最初/最後のページへ
+- `g` - グリッド表示のトグル
+- `h` - 背景画像のトグル
+- `?` - ヘルプ表示のトグル
 
 ### プリンタ補正
 
@@ -127,10 +146,28 @@ make sample.preview
 - [vivliostyle](https://vivliostyle.org/) - CSS 組版
 - [Klee One](https://fonts.google.com/specimen/Klee+One) - フォント
 
-## ビルド
+## Docker イメージ
+
+### 公開イメージ
+
+- `tecolicom/nenga-print` - フル版（PDF/HTML 生成、約 2GB）
+- `tecolicom/nenga-print:light` - 軽量版（HTML のみ、約 300MB）
+
+軽量版は vivliostyle/Chromium を含まないため PDF 生成はできませんが、
+HTML を生成してブラウザで印刷する用途に使えます。
+
+### ローカルビルド
 
 ```bash
-docker build -t tecolicom/nenga-print .
+make build  # Dockerfile を生成してビルド
+```
+
+または個別に：
+
+```bash
+make Dockerfile           # テンプレートから Dockerfile を生成
+docker build -t nenga-print .
+docker build -f Dockerfile.light -t nenga-print:light .
 ```
 
 ## ライセンス
