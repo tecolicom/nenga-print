@@ -46,7 +46,7 @@ style-printer.css:
 	vivliostyle build $*.html --style style-preview.css -o $@
 
 clean:
-	rm -f $(PDFS) $(PREVIEWS) $(HTMLS) style-printer.css
+	rm -f $(PDFS) $(PREVIEWS) $(HTMLS) style-printer.css Dockerfile Dockerfile.light
 
 # リアルタイムプレビュー（make *.preview または dozo -P $(PORT) make *.preview で実行）
 PORT ?= 13000
@@ -64,4 +64,10 @@ Dockerfile Dockerfile.light: %: %.in Makefile
 	    -e 's/@SVG_FILES@/$(SVG_FILES)/' $< > $@
 	@echo "Generated $@"
 
-.PHONY: all clean
+# Docker イメージビルド
+IMAGE ?= nenga-print
+build: Dockerfile Dockerfile.light
+	docker build -t $(IMAGE) .
+	docker build -f Dockerfile.light -t $(IMAGE):light .
+
+.PHONY: all clean build
