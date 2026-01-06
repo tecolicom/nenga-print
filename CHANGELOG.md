@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-01-06
+
+### Added
+- 軽量 Docker イメージ `nenga-print:light`（HTML 生成のみ、約 300MB）
+- `make build` で Docker イメージをビルド
+- キーボードショートカット: g（グリッド表示）, h（背景切替）, ?（ヘルプ）
+- PageUp/PageDown/Home/End でページナビゲーション
+- `?print` URL パラメータで全カード表示
+
+### Changed
+- Dockerfile をテンプレート（Dockerfile.in）から生成する方式に変更
+- CSS/SVG ファイルリストを Makefile で一元管理
+- grid.svg: パターンベースから line ベースに戻し PDF 品質を改善
+- grid.svg: 線の太さと透明度を調整（より鮮明に）
+- Makefile: ローカル用をデフォルトに（Makefile.docker は Docker 内用）
+- style-printer.css を動的生成に変更（OFFSET 対応）
+
+### Fixed
+- PDF/印刷プレビューでグリッドがぼやける問題を修正
+
 ## [0.4] - 2025-01-05
 
 ### Added
