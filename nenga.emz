@@ -102,20 +102,21 @@ preamble: |
       </table>
     </div>
   </div>
+  {%- set 名前リスト = 宛名一覧(差出人).split('／') %}
+  <div class="addr-from-name">
+    <span class="name-main">{{ 名前リスト[0] }}</span>
+    {%- for 名前 in 名前リスト[1:] %}
+    <span class="name-sub">{{ 名前 }}</span>
+    {%- endfor %}
+  </div>
   <div class="addr-from-zip">
 {{- 郵便番号欄(郵便番号(差出人)) }}
   </div>
-  <div class="addr-from">
-    <div class="addr-from-address">
-      <p class="addr-line1">{{ 都道府県(差出人) }}{{ 市区町村(差出人) }}{{ 住所(差出人) }}{% if 建物(差出人) %} {{ 建物(差出人) }}{% endif %}</p>
-    </div>
-    {%- set 名前リスト = 宛名一覧(差出人).split('／') %}
-    <div class="addr-from-name">
-      <span class="name-main">{{ 名前リスト[0] }}</span>
-      {%- for 名前 in 名前リスト[1:] %}
-      <span class="name-sub">{{ 名前 }}</span>
-      {%- endfor %}
-    </div>
+  <div class="addr-from-address">
+    <p class="addr-line1">{{ 都道府県(差出人) }}{{ 市区町村(差出人) }}{{ 住所(差出人) }}</p>
+    {%- if 建物(差出人) %}
+    <p class="addr-line2">{{ 建物(差出人) }}</p>
+    {%- endif %}
   </div>
 </section>
 {%- endfor %}

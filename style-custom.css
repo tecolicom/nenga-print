@@ -62,29 +62,11 @@ html, body {
 }
 
 /* ==================== */
-/* 差出人住所（横書き） */
-/* ==================== */
-.addr-from-address {
-  position: absolute;
-  top: 116.5mm;
-  left: 7mm;
-  font-size: 9pt;
-  line-height: 1.4;
-}
-
-.addr-from-address .addr-line1 {
-}
-
-.addr-from-address .addr-line2 {
-  margin-left: 1em;
-}
-
-/* ==================== */
 /* 差出人氏名（横書き） */
 /* ==================== */
 .addr-from-name {
   position: absolute;
-  top: 110.5mm;
+  top: 115.5mm;
   left: 7mm;
   font-size: 10pt;
   line-height: 1.4;
@@ -96,4 +78,27 @@ html, body {
 .addr-from-name .name-sub {
   display: inline;
   margin-left: 0.5em;
+}
+
+/* ==================== */
+/* 差出人住所（横書き） */
+/* ==================== */
+/* 郵便番号の右に2行で配置（郵便番号の高さにセンタリング） */
+.addr-from-address {
+  position: absolute;
+  top: 122.5mm;
+  left: 37.5mm;
+  right: 5mm;
+  height: 6.8mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 8pt;
+  line-height: 1.2;
+}
+
+.addr-from-address .addr-line1 {
+}
+
+.addr-from-address .addr-line2 {
 }
