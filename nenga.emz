@@ -6,8 +6,9 @@ bind:
 preamble: |
   {%- macro 値(v) %}{{ v|default('')|string|replace('nan', '') }}{% endmacro -%}
   {%- macro 郵便番号欄(郵便番号) -%}
+    {%- set 番号 = 郵便番号.replace('-', '') -%}
     {%- for i in range(7) %}
-    <span class="zip-digit zip-{{ i + 1 }}">{{ 郵便番号[i] if i < 郵便番号|length else '' }}</span>
+    <span class="zip-digit zip-{{ i + 1 }}">{{ 番号[i] if i < 番号|length else '' }}</span>
     {%- endfor -%}
   {%- endmacro -%}
   {#- 住所の正規化 -#}
@@ -37,11 +38,36 @@ preamble: |
     {%- elif '郵便番号' in row %}{{ 値(row['郵便番号']) }}
     {%- endif -%}
   {%- endmacro -%}
-  {#- 筆頭者・配偶者・子供・家族をまとめた文字列を返す -#}
+  {#- 都道府県の正規化 -#}
+  {%- macro 都道府県(row) -%}
+    {{ 値(row['都道府県']) }}
+  {%- endmacro -%}
+  {#- 市区町村の正規化 -#}
+  {%- macro 市区町村(row) -%}
+    {{ 値(row['市区町村']) }}
+  {%- endmacro -%}
+  {#- 名前から姓を取り出す（"姓 名" → "姓"、"名前のみ" → ""） -#}
+  {%- macro 姓(名前) -%}
+    {%- set 姓名 = 名前.split(' ', 1) -%}
+    {{ 姓名[0] if 姓名|length > 1 else '' }}
+  {%- endmacro -%}
+  {#- 名前から名を取り出す（"姓 名" → "名"、"名前のみ" → "名前のみ"） -#}
+  {%- macro 名(名前) -%}
+    {%- set 姓名 = 名前.split(' ', 1) -%}
+    {{ 姓名[1] if 姓名|length > 1 else 名前 }}
+  {%- endmacro -%}
+  {#- 敬称の取得（デフォルト: 様） -#}
+  {%- macro 敬称(row) -%}
+    {%- if '敬称' in row %}{{ 値(row['敬称']) or '様' }}
+    {%- else %}様
+    {%- endif -%}
+  {%- endmacro -%}
+  {#- 筆頭者・配偶者・子供・家族を／区切りで返す -#}
   {#- 形式: "姓 名" - 先頭のスペースで分割して姓・名を取得 -#}
   {%- macro 宛名一覧(row) -%}
     {%- set 筆頭者 = 値(row['姓']) ~ ' ' ~ 値(row['名']) -%}
-    {%- set names = [筆頭者, 値(row['配偶者']), 値(row['子供']), 値(row['家族'])] | select | list -%}
+    {%- set 家族 = (値(row['配偶者']) ~ '／' ~ 値(row['子供']) ~ '／' ~ 値(row['家族'])).replace('・', '／') -%}
+    {%- set names = ([筆頭者] + 家族.split('／')) | select | list -%}
     {{ names | join('／') }}
   {%- endmacro -%}
 ---
@@ -56,43 +82,40 @@ preamble: |
 <body>
 {%- for 宛先 in 宛先リスト if not スキップ対象(宛先) %}
 <section class="card">
-  <div class="to-zip">
-{{- 郵便番号欄(郵便番号(宛先).replace('-', '')) }}
+  <div class="addr-to-zip">
+{{- 郵便番号欄(郵便番号(宛先)) }}
   </div>
-  <div class="to-main">
-    <div class="to-address">
-      <p class="addr-line1">{{ 値(宛先['都道府県']) }}{{ 値(宛先['市区町村']) }}</p>
+  <div class="addr-to">
+    <div class="addr-to-address">
+      <p class="addr-line1">{{ 都道府県(宛先) }}{{ 市区町村(宛先) }}</p>
       <p class="addr-line2">{{ 住所(宛先) }}</p>
       {%- if 建物(宛先) %}
       <p class="addr-line3">{{ 建物(宛先) }}</p>
       {%- endif %}
     </div>
-    {%- set 宛名リスト = 宛名一覧(宛先).replace('・', '／').split('／') %}
-    <div class="to-names">
+    {%- set 名前リスト = 宛名一覧(宛先).split('／') %}
+    <div class="addr-to-name">
       <table class="name-table">
-        {%- for 名前 in 宛名リスト %}
-        {%- set 姓名 = 名前.split(' ', 1) %}
-        {%- if 姓名|length > 1 %}
-        <tr><td class="sei">{{ 姓名[0] }}</td><td class="mei">{{ 姓名[1] }}</td><td class="title">様</td></tr>
-        {%- else %}
-        <tr><td class="sei"></td><td class="mei">{{ 名前 }}</td><td class="title">様</td></tr>
-        {%- endif %}
+        {%- for 名前 in 名前リスト %}
+        <tr><td class="name-sei">{{ 姓(名前) }}</td><td class="name-mei">{{ 名(名前) }}</td><td class="name-title">{{ 敬称(宛先) }}</td></tr>
         {%- endfor %}
       </table>
     </div>
   </div>
-  <div class="from-zip">
-{{- 郵便番号欄(郵便番号(差出人).replace('-', '')) }}
+  <div class="addr-from-zip">
+{{- 郵便番号欄(郵便番号(差出人)) }}
   </div>
-  <div class="from-address">
-    <p class="addr-line1">{{ 値(差出人['都道府県']) }}{{ 値(差出人['市区町村']) }}{{ 住所(差出人) }}{% if 建物(差出人) %} {{ 建物(差出人) }}{% endif %}</p>
-  </div>
-  {%- set 宛名リスト = 宛名一覧(差出人).replace('・', '／').split('／') %}
-  <div class="from-names">
-    <span class="name-main">{{ 宛名リスト[0] }}</span>
-    {%- for 名前 in 宛名リスト[1:] %}
-    <span class="name-sub">{{ 名前 }}</span>
-    {%- endfor %}
+  <div class="addr-from">
+    <div class="addr-from-address">
+      <p class="addr-line1">{{ 都道府県(差出人) }}{{ 市区町村(差出人) }}{{ 住所(差出人) }}{% if 建物(差出人) %} {{ 建物(差出人) }}{% endif %}</p>
+    </div>
+    {%- set 名前リスト = 宛名一覧(差出人).split('／') %}
+    <div class="addr-from-name">
+      <span class="name-main">{{ 名前リスト[0] }}</span>
+      {%- for 名前 in 名前リスト[1:] %}
+      <span class="name-sub">{{ 名前 }}</span>
+      {%- endfor %}
+    </div>
   </div>
 </section>
 {%- endfor %}

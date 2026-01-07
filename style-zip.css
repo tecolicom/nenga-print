@@ -1,7 +1,7 @@
 /* 郵便番号配置（年賀はがき枠に合わせた固定位置） */
 
 /* 郵便番号フォント */
-.to-zip, .from-zip {
+.addr-to-zip, .addr-from-zip {
   font-family: Helvetica, sans-serif;
   font-weight: 100;
 }
@@ -10,14 +10,14 @@
 /* 宛先郵便番号         */
 /* ==================== */
 /* SVG枠: 各枠 width=5.7mm, height=8mm, top=12mm */
-.to-zip {
+.addr-to-zip {
   position: absolute;
   top: 12mm;
   height: 8mm;
   line-height: 8mm;
 }
 
-.to-zip .zip-digit {
+.addr-to-zip .zip-digit {
   position: absolute;
   font-size: 15pt;
   width: 5.7mm;
@@ -25,24 +25,24 @@
 }
 
 /* 郵便番号3桁 */
-.to-zip .zip-1 { left: 44.4mm; }
-.to-zip .zip-2 { left: 51.7mm; }
-.to-zip .zip-3 { left: 58.8mm; }
+.addr-to-zip .zip-1 { left: 44.4mm; }
+.addr-to-zip .zip-2 { left: 51.7mm; }
+.addr-to-zip .zip-3 { left: 58.8mm; }
 
 /* 郵便番号4桁 */
-.to-zip .zip-4 { left: 66.0mm; }
-.to-zip .zip-5 { left: 72.9mm; }
-.to-zip .zip-6 { left: 79.8mm; }
-.to-zip .zip-7 { left: 86.7mm; }
+.addr-to-zip .zip-4 { left: 66.0mm; }
+.addr-to-zip .zip-5 { left: 72.9mm; }
+.addr-to-zip .zip-6 { left: 79.8mm; }
+.addr-to-zip .zip-7 { left: 86.7mm; }
 
 /* ==================== */
 /* 差出人郵便番号       */
 /* ==================== */
-.from-zip {
+.addr-from-zip {
   position: absolute;
 }
 
-.from-zip .zip-digit {
+.addr-from-zip .zip-digit {
   position: absolute;
   font-size: 12pt;
   top: 122.5mm;
@@ -52,12 +52,12 @@
 }
 
 /* 郵便番号3桁 */
-.from-zip .zip-1 { left: 6.5mm; }
-.from-zip .zip-2 { left: 10.5mm; }
-.from-zip .zip-3 { left: 14.5mm; }
+.addr-from-zip .zip-1 { left: 6.5mm; }
+.addr-from-zip .zip-2 { left: 10.5mm; }
+.addr-from-zip .zip-3 { left: 14.5mm; }
 
 /* 郵便番号4桁 */
-.from-zip .zip-4 { left: 19.5mm; }
-.from-zip .zip-5 { left: 23.5mm; }
-.from-zip .zip-6 { left: 27.5mm; }
-.from-zip .zip-7 { left: 31.5mm; }
+.addr-from-zip .zip-4 { left: 19.5mm; }
+.addr-from-zip .zip-5 { left: 23.5mm; }
+.addr-from-zip .zip-6 { left: 27.5mm; }
+.addr-from-zip .zip-7 { left: 31.5mm; }
